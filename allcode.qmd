@@ -88,7 +88,7 @@ df.reset_index(drop=True, inplace=True)
 df.to_csv("data.csv")
 ```
 
-## Bag of Words 
+### Bag of Words 
 
 ```{python}
 import pandas as pd
@@ -121,7 +121,7 @@ def bow_y():
 
 ```
 
-## Term Frequency - Inverse Document Frequency
+### Term Frequency - Inverse Document Frequency
 
 ```{python}
 # Imports
@@ -182,3 +182,69 @@ def embeddings_data_prep():
 
 #x_train_pad, x_val_pad, x_test_pad, y_train, y_val, y_test = embeddings_data_prep()
 ```
+
+## Exploratory Data Analysis
+
+Number of sentences per president.
+
+```{python}
+import seaborn as sns
+import pandas as pd
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
+
+data = pd.read_csv("data.csv").iloc[:,1:]
+sentence_counts = data['completion'].value_counts()
+
+plt.figure(figsize=(10, 6))
+sns.barplot(x=sentence_counts.index, y=sentence_counts.values)
+
+plt.xlabel('Presidents')
+plt.ylabel('Number of Sentences')
+plt.savefig('eda_plots/sentence_counts.png', bbox_inches='tight')
+plt.show()
+
+```
+
+Sentence length plot.
+
+```{python}
+data['sentence_length'] = data['prompt'].apply(lambda x: len(x.split()))
+average_sentence_length = data.groupby('completion')['sentence_length'].mean().reset_index()
+desired_order = [4, 2, 3, 1, 0, 5]
+average_sentence_length = average_sentence_length.loc[desired_order]
+# Plot the barplot of average sentence lengths per president
+plt.figure(figsize=(10, 6))
+sns.barplot(x='completion', y='sentence_length', data=average_sentence_length)
+plt.xlabel('Presidents')
+plt.ylabel('Average Sentence Length')
+plt.savefig('eda_plots/sentence_length.png', bbox_inches='tight')
+plt.show()
+```
+
+Produce word cloud.
+
+```{python}
+
+presidents = data['completion'].unique()
+for president in presidents:
+    text = " ".join(data[data['completion'] == president]['prompt'])
+    
+    # Create a WordCloud object
+    wordcloud = WordCloud(width=800, height=400, background_color='grey').generate(text)
+    
+    # Plot the word cloud
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    #plt.title(f'Word Cloud for President {president}')
+    plt.axis('off')
+    plt.show()
+```
+
+## Models
+### Neural Network
+
+
+
+
