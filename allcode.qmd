@@ -88,5 +88,147 @@ df.reset_index(drop=True, inplace=True)
 df.to_csv("data.csv")
 ```
 
-git remote add a1repo https://github.com/WesleyJKing/A1
+## Bag of Words 
 
+```{python}
+import pandas as pd
+import re
+from sklearn.feature_extraction.text import CountVectorizer
+
+def bow_x():
+    # Read the data once
+    data = pd.read_csv("data.csv")
+    
+    # Extract relevant columns
+    text_data = data['prompt']
+    y = data['completion']
+    
+    # Initialize a CountVectorizer for BOW representation
+    vectorizer = CountVectorizer(lowercase=True, token_pattern=r"(?u)\b\w+\b")
+    
+    # Fit and transform the text data
+    X = vectorizer.fit_transform(text_data)
+    
+    # Create a DataFrame from the BOW representation
+    bow_df = pd.DataFrame(X.toarray(), columns=vectorizer.get_feature_names_out())
+    
+    return bow_df
+
+# function to return names of presidents
+def bow_y():
+  y = names['completion']
+  return(y)
+
+```
+
+## Term Frequency - Inverse Document Frequency
+
+```{python}
+# Imports
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+```
+
+```{python}
+
+def tf_idf():
+    df = pd.read_csv("data.csv").iloc[:,1:]
+    sentences = df['prompt'].tolist()
+
+    # Create a TfidfVectorizer
+    tfidf_vectorizer = TfidfVectorizer()
+
+    # Fit and transform the sentences to compute TF-IDF values
+    tfidf_matrix = tfidf_vectorizer.fit_transform(sentences)
+
+    # Create a new dataframe with TF-IDF values
+    tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf_vectorizer.get_feature_names_out())
+```
+
+## Word Embedding
+
+```{python}
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from keras.preprocessing.text import Tokenizer
+# from keras.preprocessing.sequence import pad_sequences
+from keras.utils import pad_sequences
+from keras.models import Sequential
+from keras.layers import Embedding, Dropout, Flatten, Dense
+
+
+def embeddings_data_prep():
+    data = pd.read_csv("data.csv").iloc[:,1:]
+
+    # Tokenization
+    max_features = 1000
+    tokenizer = Tokenizer(num_words=max_features)
+    tokenizer.fit_on_texts(data['prompt'])
+    # Displaying the first tweet text
+    #print(data['prompt'].iloc[0])
+    # Converting the first tweet text to sequence
+    tts = tokenizer.texts_to_sequences([data['prompt'].iloc[0]])
+    #print(tts)
+
+    sequences = tokenizer.texts_to_sequences(data['prompt'])
+    # ensuring sequences are longer than 0
+    seq_ok = [i for i, s in enumerate(sequences) if len(s) > 0]
+    y = data['completion'].iloc[seq_ok].values # keep correct output
+    sequences = [sequences[i] for i in seq_ok] # keep correct seqs
+    valid_data = data.iloc[seq_ok] # keep correct observations
+    x = valid_data
+    x.reset_index(drop=True, inplace=True)
+    prompt = x['prompt']
+    # Splitting data into training, validation and test sets
+    import random
+
+    # Specify the range of integers
+    start = 0
+    end = len(y)
+    total_samples = 9188
+    sample_size_1 = int(0.7 * total_samples)
+    sample_size_2 = int(0.15 * total_samples)
+    sample_size_3 = int(0.15 * total_samples)
+    training_ids = random.sample(range(start, end), sample_size_1)
+    remaining_integers = [i for i in range(start, end) if i not in training_ids]
+    val_ids = random.sample(remaining_integers, sample_size_2)
+    remaining_integers = [i for i in remaining_integers if i not in val_ids]
+    test_ids = random.sample(remaining_integers, sample_size_3)
+
+
+    train = {
+        'x': [sequences[i] for i in training_ids],
+        'y': y[training_ids]
+    }
+    validation = {
+        'x': [sequences[i] for i in val_ids],
+        'y': y[val_ids]
+    }
+    test = {
+        'x': [sequences[i] for i in test_ids],
+        'y': y[test_ids]
+    }
+
+    # plt.hist([len(s) for s in sequences], bins=10)
+    # h = [len(s) for s in sequences]
+
+    # plt.title('Sequence length after tokenization')
+    # plt.show()
+    maxlen = 50
+
+    x_train_pad = pad_sequences(train['x'], maxlen=maxlen)
+    x_val_pad = pad_sequences(validation['x'], maxlen=maxlen)
+    x_test_pad = pad_sequences(test['x'], maxlen=maxlen)
+    y_train = train['y']
+    y_val = validation['y']
+    y_test = test['y']
+
+    return x_train_pad, x_val_pad, x_test_pad, y_train, y_val, y_test
+
+# x_train_pad, x_val_pad, x_test_pad, y_train, y_val, y_test = embeddings_data_prep()
+
+
+
+```
