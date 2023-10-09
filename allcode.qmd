@@ -245,6 +245,316 @@ for president in presidents:
 ## Models
 ### Neural Network
 
+```{python}
+# Import required libraries
+import pandas as pd
+import numpy as np 
+import matplotlib.pyplot as plt
+import sklearn
+import pickle
+#from bow import bow_x, bow_y
 
+# Import necessary modules
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+from math import sqrt
+from sklearn.preprocessing import LabelEncoder
+
+
+# Keras specific
+import keras
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.utils import to_categorical 
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.regularizers import l2
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+x = bow_x()
+y = bow_y()
+def data_prep(x,y):
+    X_train, X_temp, y_train, y_temp = train_test_split(x, y, test_size=0.3, random_state=42)
+    # Split your data into training and validation sets
+    X_test, X_val, y_test, y_val = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
+    X_train = X_train.values
+    X_val = X_val.values
+    X_test = X_test.values
+
+    label_encoder = LabelEncoder()
+
+    # Fit and transform the labels to integer labels
+    y_train_encoded = label_encoder.fit_transform(y_train)
+    y_val_encoded = label_encoder.fit_transform(y_val)
+    y_test_encoded = label_encoder.fit_transform(y_test)
+
+    # Convert to one-hot encoded vector
+    y_train = to_categorical(y_train_encoded)
+    y_val = to_categorical(y_val_encoded)
+    y_test = to_categorical(y_test_encoded)
+
+    # dimensions
+    inp_dim = X_test.shape[1]
+    count_classes = y_test.shape[1]
+    return {
+        'X_train': X_train,
+        'X_val': X_val,
+        'X_test': X_test,
+        'y_train': y_train,
+        'y_val': y_val,
+        'y_test': y_test,
+        'inp_dim': inp_dim,
+        'count_classes': count_classes
+    }
+data = data_prep(x,y)
+X_train = data['X_train']
+X_val = data['X_val']
+X_test = data['X_test']
+y_train = data['y_train']
+y_val = data['y_val']
+y_test= data['y_test']
+inp_dim = data['inp_dim']
+count_classes = data['count_classes']
+num_epochs = 20
+
+# function to train and test model with specific params
+def create_custom_model(neurons_per_layer, l2_reg_value):
+    # Create a Sequential model
+    model = Sequential()
+
+    # Add the input layer with L2 regularization
+    model.add(Dense(neurons_per_layer[0], activation='relu', input_dim=inp_dim, kernel_regularizer=l2(l2_reg_value)))
+
+    # Add hidden layers with L2 regularization
+    for num_neurons in neurons_per_layer[1:]:
+        model.add(Dense(num_neurons, activation='relu', kernel_regularizer=l2(l2_reg_value)))
+
+    # Add the output layer with L2 regularization
+    model.add(Dense(count_classes, activation='softmax', kernel_regularizer=l2(l2_reg_value)))
+
+    # Compile the model
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+    # Train the model with validation data
+    history = model.fit(X_train, y_train, epochs=num_epochs, validation_data=(X_val, y_val))
+
+    # Evaluate the model on training and test data
+    scores_train = model.evaluate(X_train, y_train, verbose=1)
+    scores_test = model.evaluate(X_test, y_test, verbose=0)
+    
+
+    # print('Accuracy on training data: {:.2f}%\nError on training data: {:.2f}'.format(scores_train[1] * 100, (1 - scores_train[1]) * 100))
+    # print('Accuracy on test data: {:.2f}%\nError on test data: {:.2f}'.format(scores_test[1] * 100, (1 - scores_test[1]) * 100))
+
+    # Access validation scores from the history object
+    val_loss = history.history['val_loss']
+    val_accuracy = history.history['val_accuracy']
+
+    y_pred = model.predict(X_test)
+    y_pred_classes = np.argmax(y_pred, axis=1)  # Convert one-hot encoded predictions to class labels
+
+    # Convert one-hot encoded ground truth labels to class labels
+    y_true_classes = np.argmax(y_test, axis=1)
+
+    # Calculate accuracy, precision, recall, and F1 score
+    accuracy = accuracy_score(y_true_classes, y_pred_classes)
+    precision = precision_score(y_true_classes, y_pred_classes, average='weighted')
+    recall = recall_score(y_true_classes, y_pred_classes, average='weighted')
+    f1 = f1_score(y_true_classes, y_pred_classes, average='weighted')
+
+    # print('Accuracy on test data: {:.2f}%'.format(accuracy * 100))
+    # print('Precision on test data: {:.2f}'.format(precision))
+    # print('Recall on test data: {:.2f}'.format(recall))
+    # print('F1 score on test data: {:.2f}'.format(f1))
+
+    return {
+        'val_loss': val_loss,
+        'val_accuracy': val_accuracy,
+        'train_loss': history.history['loss'],
+        'train_accuracy': history.history['accuracy'],
+        'test_loss': scores_test[0],
+        'test_accuracy': scores_test[1],
+        'precision': precision,
+        'recall': recall,
+        'f1_score': f1
+        }
+
+```
+
+Create 3 model architectures, and implement L2 regularization on best performing one. First with BoW data.
+
+```{python}
+
+bow_results_2 = create_custom_model(neurons_per_layer=[500,200], l2_reg_value=0)
+bow_results_3 = create_custom_model(neurons_per_layer=[500,200,100], l2_reg_value=0)
+bow_results_4 = create_custom_model(neurons_per_layer=[800,400,100,50], l2_reg_value=0)
+
+# bow_results_2["test_accuracy"] #0.5952890515327454
+# bow_results_3["test_accuracy"] #0.5852962136268616
+# bow_results_4["test_accuracy"] #0.6038544178009033
+
+```
+
+Now regularize the 2 layer Neural Network, since the benefit is incremental, but much less compute needed.
+
+```{python}
+bow_results_2_001 = create_custom_model(neurons_per_layer=[500,200], l2_reg_value=0.01)
+
+bow_results_2_005 = create_custom_model(neurons_per_layer=[500,200], l2_reg_value=0.05)
+
+bow_results_2_01 = create_custom_model(neurons_per_layer=[500,200], l2_reg_value=0.1)
+
+bow_results_2_001["test_accuracy"] #0.5952890515327454
+bow_results_2_005["test_accuracy"] #0.5852962136268616
+bow_results_2_01["test_accuracy"] #0.6038544178009033
+
+bow_results_2_0 = create_custom_model(neurons_per_layer=[500,200], l2_reg_value=0)
+
+file_path = 'nn_res/bow_results_2_0.pkl'
+with open(file_path, 'wb') as file:
+    pickle.dump(bow_results_2_0, file)
+
+```
+
+Now do the same process but for TF-IDF dataset.
+
+```{python}
+#from tf_idf import idf
+# import idf data
+x = idf()
+data = data_prep(x,y)
+X_train = data['X_train']
+X_val = data['X_val']
+X_test = data['X_test']
+y_train = data['y_train']
+y_val = data['y_val']
+y_test= data['y_test']
+inp_dim = data['inp_dim']
+count_classes = data['count_classes']
+
+idf_results_2 = create_custom_model(neurons_per_layer=[500,200], l2_reg_value=0)
+idf_results_3 = create_custom_model(neurons_per_layer=[500,200,100], l2_reg_value=0)
+idf_results_4 = create_custom_model(neurons_per_layer=[800,400,100,50], l2_reg_value=0)
+
+idf_results_2["test_accuracy"] #0.600285530090332
+idf_results_3["test_accuracy"] #0.599571704864502
+idf_results_4["test_accuracy"] #0.5888651013374329
+
+
+idf_results_2_001 = create_custom_model(neurons_per_layer=[500,200], l2_reg_value=0.01)
+
+idf_results_2_005 = create_custom_model(neurons_per_layer=[500,200], l2_reg_value=0.05)
+
+idf_results_2_01 = create_custom_model(neurons_per_layer=[500,200], l2_reg_value=0.1)
+
+# no reg is the best
+idf_results_2_0 = create_custom_model(neurons_per_layer=[500,200], l2_reg_value=0)
+
+
+# idf_results_2_001["test_accuracy"] #0.600285530090332
+# idf_results_2_005["test_accuracy"] #0.599571704864502
+# idf_results_2_01["test_accuracy"] #0.5888651013374329
+idf_results_2_0["test_accuracy"]
+
+file_path = 'nn_res/idf_results_2_0.pkl'
+with open(file_path, 'wb') as file:
+    pickle.dump(idf_results_2_0, file)
+```
+
+And train networks for word embeddings.
+
+```{python}
+#from embedding import embeddings_data_prep
+
+X_train, X_val, X_test, y_train, y_val, y_test = embeddings_data_prep()
+# encode the y values
+label_encoder = LabelEncoder()
+
+# Fit and transform the labels to integer labels
+y_train_encoded = label_encoder.fit_transform(y_train)
+y_val_encoded = label_encoder.fit_transform(y_val)
+y_test_encoded = label_encoder.fit_transform(y_test)
+
+# Convert to one-hot encoded vector
+y_train = to_categorical(y_train_encoded)
+y_val = to_categorical(y_val_encoded)
+y_test = to_categorical(y_test_encoded)
+
+# dimensions
+inp_dim = X_test.shape[1]
+count_classes = y_test.shape[1]
+```
+
+```{python}
+# train models
+num_epochs = 100
+embeds_results_2 = create_custom_model(neurons_per_layer=[40,10], l2_reg_value=0)
+embeds_results_3 = create_custom_model(neurons_per_layer=[40,30,10], l2_reg_value=0)
+embeds_results_4 = create_custom_model(neurons_per_layer=[40,30,20,10], l2_reg_value=0)
+
+embeds_results_2["test_accuracy"] #0.2942446172237396
+embeds_results_3["test_accuracy"] #0.2942446172237396
+embeds_results_4["test_accuracy"] #0.3179856240749359
+
+# now with reg
+
+embeds_results_2_001 = create_custom_model(neurons_per_layer=[40,30,20,10], l2_reg_value=0.01)
+
+embeds_results_2_005 = create_custom_model(neurons_per_layer=[40,30,20,10], l2_reg_value=0.05)
+
+embeds_results_2_01 = create_custom_model(neurons_per_layer=[40,30,20,10], l2_reg_value=0.1)
+
+
+embeds_results_2_001["test_accuracy"] #0.600285530090332
+embeds_results_2_005["test_accuracy"] #0.599571704864502
+embeds_results_2_01["test_accuracy"] #0.5888651013374329
+num_epochs = 200
+embeds_results_2_0 = create_custom_model(neurons_per_layer=[40,30,20,10], l2_reg_value=0)
+
+
+file_path = 'nn_res/embed_results_2_0.pkl'
+with open(file_path, 'wb') as file:
+    pickle.dump(embeds_results_2_0, file)
+
+```
+
+PLOT MODEL INFORMATION.
+
+```{python}
+with open("nn_res/bow_results_2_0.pkl", 'rb') as file:
+    bow_res = pickle.load(file)
+
+with open("nn_res/idf_results_2_0.pkl", 'rb') as file:
+    idf_res = pickle.load(file)
+
+with open("nn_res/embed_results_2_0.pkl", 'rb') as file:
+    embed_res = pickle.load(file)
+
+bow_val = bow_res["val_accuracy"]
+idf_val = idf_res["val_accuracy"]
+embed_val = embed_res["val_accuracy"][::10]
+x_bow = range(len(bow_val))
+x_idf = range(len(idf_val))
+x_embed = range(len(embed_val))
+x_ticks = list(range(20))
+
+fig, ax = plt.subplots()
+ax.plot(x_bow, bow_val, label='BoW')#, marker='o')
+ax.plot(x_idf, idf_val, label='IDF')#, marker='s')
+ax.plot(x_embed, embed_val, label='Embeddings')#, marker='^')
+
+# Set labels and title
+ax.set_xlabel('Epochs')
+ax.set_ylabel('Validation Accuracy')
+ax.set_title('Validation Accuracy Comparison')
+ax.legend()
+ax.set_xticks(range(21))
+plt.grid(True)
+plt.savefig('nn_res/nn_val_acc.png', bbox_inches='tight')
+plt.show()
+
+```
 
 
