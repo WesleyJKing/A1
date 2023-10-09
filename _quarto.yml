@@ -9,6 +9,7 @@ website:
       - href: index.qmd
         text: Home
       - allcode.qmd
+      - writeup.qmd
 
 format:
   html:
