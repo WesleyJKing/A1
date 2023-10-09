@@ -150,85 +150,35 @@ def tf_idf():
 ```{python}
 
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 from keras.preprocessing.text import Tokenizer
-# from keras.preprocessing.sequence import pad_sequences
-from keras.utils import pad_sequences
-from keras.models import Sequential
-from keras.layers import Embedding, Dropout, Flatten, Dense
-
+from keras.preprocessing.sequence import pad_sequences
 
 def embeddings_data_prep():
-    data = pd.read_csv("data.csv").iloc[:,1:]
+    data = pd.read_csv("data.csv").iloc[:, 1:]
 
     # Tokenization
     max_features = 1000
     tokenizer = Tokenizer(num_words=max_features)
     tokenizer.fit_on_texts(data['prompt'])
-    # Displaying the first tweet text
-    #print(data['prompt'].iloc[0])
-    # Converting the first tweet text to sequence
-    tts = tokenizer.texts_to_sequences([data['prompt'].iloc[0]])
-    #print(tts)
-
     sequences = tokenizer.texts_to_sequences(data['prompt'])
-    # ensuring sequences are longer than 0
-    seq_ok = [i for i, s in enumerate(sequences) if len(s) > 0]
-    y = data['completion'].iloc[seq_ok].values # keep correct output
-    sequences = [sequences[i] for i in seq_ok] # keep correct seqs
-    valid_data = data.iloc[seq_ok] # keep correct observations
-    x = valid_data
-    x.reset_index(drop=True, inplace=True)
-    prompt = x['prompt']
-    # Splitting data into training, validation and test sets
-    import random
 
-    # Specify the range of integers
-    start = 0
-    end = len(y)
-    total_samples = 9188
-    sample_size_1 = int(0.7 * total_samples)
-    sample_size_2 = int(0.15 * total_samples)
-    sample_size_3 = int(0.15 * total_samples)
-    training_ids = random.sample(range(start, end), sample_size_1)
-    remaining_integers = [i for i in range(start, end) if i not in training_ids]
-    val_ids = random.sample(remaining_integers, sample_size_2)
-    remaining_integers = [i for i in remaining_integers if i not in val_ids]
-    test_ids = random.sample(remaining_integers, sample_size_3)
+    # Filter out empty sequences and corresponding labels
+    filtered_indices = [i for i, s in enumerate(sequences) if len(s) > 0]
+    sequences = [sequences[i] for i in filtered_indices]
+    y = data['completion'].iloc[filtered_indices].values
 
+    # Splitting data into training, validation, and test sets
+    x_train, x_temp, y_train, y_temp = train_test_split(sequences, y, test_size=0.3, random_state=42)
+    x_val, x_test, y_val, y_test = train_test_split(x_temp, y_temp, test_size=0.5, random_state=42)
 
-    train = {
-        'x': [sequences[i] for i in training_ids],
-        'y': y[training_ids]
-    }
-    validation = {
-        'x': [sequences[i] for i in val_ids],
-        'y': y[val_ids]
-    }
-    test = {
-        'x': [sequences[i] for i in test_ids],
-        'y': y[test_ids]
-    }
-
-    # plt.hist([len(s) for s in sequences], bins=10)
-    # h = [len(s) for s in sequences]
-
-    # plt.title('Sequence length after tokenization')
-    # plt.show()
     maxlen = 50
-
-    x_train_pad = pad_sequences(train['x'], maxlen=maxlen)
-    x_val_pad = pad_sequences(validation['x'], maxlen=maxlen)
-    x_test_pad = pad_sequences(test['x'], maxlen=maxlen)
-    y_train = train['y']
-    y_val = validation['y']
-    y_test = test['y']
+    x_train_pad = pad_sequences(x_train, maxlen=maxlen)
+    x_val_pad = pad_sequences(x_val, maxlen=maxlen)
+    x_test_pad = pad_sequences(x_test, maxlen=maxlen)
 
     return x_train_pad, x_val_pad, x_test_pad, y_train, y_val, y_test
 
-# x_train_pad, x_val_pad, x_test_pad, y_train, y_val, y_test = embeddings_data_prep()
 
-
-
+#x_train_pad, x_val_pad, x_test_pad, y_train, y_val, y_test = embeddings_data_prep()
 ```
