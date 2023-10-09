@@ -1,0 +1,92 @@
+---
+title: "Welcome to all my code"
+execute:
+  echo: true
+  eval: false
+---
+
+## Data Cleaning
+
+In this section, we will perform data cleaning and prepare various datasets for analysis.
+
+```{python}
+import os
+import numpy as np
+import torch
+import pandas as pd
+import nltk
+import re
+from nltk.tokenize import sent_tokenize
+nltk.download('punkt')
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
+
+```
+
+Extract names of all data files, store in `files` array, and extract names of all presidents and store in `president_names` array.
+
+```{python}
+#| echo: true
+
+folder_path = 'data'
+files = os.listdir(folder_path)
+files = [file for file in files if os.path.isfile(os.path.join(folder_path, file))]
+
+for file in files[:3]:
+    print(file)
+
+president_names = []
+
+# Define a regular expression pattern to match the president's name
+pattern = r'_(.*?)\.txt'
+
+for file in files:
+    match = re.search(pattern, file)
+    if match:
+        president_name = match.group(1)
+        # remove prefix and if not there its fine already
+        president_name = president_name.replace('post_elections_', '').replace('pre_elections_', '')
+        president_names.append(president_name)
+
+
+```
+
+Make dataset of presidents (column 1) and sentences (column 2).
+
+```{python}
+#| echo: true
+df = pd.DataFrame(columns=['completion', 'prompt'])
+
+# read in file and skip the first two lines
+for file_index in range(len(files)):
+
+    file_path = f'data/{files[file_index]}'  
+    with open(file_path, 'r', encoding='utf-8') as file:
+        lines = file.readlines()[2:]
+
+    # Combine the lines into a single text
+    text = ' '.join(lines)
+
+    # tokenize the text into sentences using NLTK
+    sentences = sent_tokenize(text) # remove "\n" 
+    # remove "\n"
+    cleaned_sentences = [sentence.replace('\n', '') for sentence in sentences]
+
+    current_president = president_names[file_index]
+    dftemp = pd.DataFrame({'completion': current_president,  'prompt': cleaned_sentences})
+    df = pd.concat([df,dftemp], axis=0)
+
+# remove stopwords function
+def remove_stopwords(sentence):
+    words = sentence.split()
+    filtered_words = [word for word in words if word.lower() not in ENGLISH_STOP_WORDS]
+    return " ".join(filtered_words)
+
+df['prompt'] = df['prompt'].apply(remove_stopwords)
+
+df.reset_index(drop=True, inplace=True)
+
+df.to_csv("data.csv")
+```
+
+git remote add a1repo https://github.com/WesleyJKing/A1
+
