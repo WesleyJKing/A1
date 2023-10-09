@@ -557,4 +557,249 @@ plt.show()
 
 ```
 
+### Boosted Tree
+
+
+```{python}
+import catboost as cb
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import shap
+import re
+import pickle
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics import r2_score
+from sklearn.inspection import permutation_importance
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import OneHotEncoder
+from catboost import CatBoostClassifier
+import collections
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+# from bow import bow_x, bow_y
+# from tf_idf import idf
+# from embedding import embeddings_data_prep
+```
+
+First we do catboost on BoW data.
+
+```{python}
+# SPLIT INTO BAG OF WORDS FORMAT
+x = bow_x()
+y = bow_y()
+# split data train,val,test
+# Split the data into training (70%), validation (15%), and test (15%) sets
+x_train, x_temp, y_train, y_temp = train_test_split(x, y, test_size=0.3, random_state=42)
+
+x_val, x_test, y_val, y_test = train_test_split(x_temp, y_temp, test_size=0.5, random_state=42)
+
+# BRING DATA: SPLIT INTO TRAIN, VALIDATION AND TEST
+train_dataset = cb.Pool(x_train, y_train) 
+val_dataset = cb.Pool(x_val, y_val) 
+test_dataset = cb.Pool(x_test, y_test)
+# CREATE CATBOOST MODEL
+catboost_classifier = CatBoostClassifier()
+#CREATE GRID OF PARAMETERS
+grid = {'iterations': [10, 50, 80],
+        'learning_rate': [0.03, 0.05],
+        'depth': [4, 5, 6],
+        'l2_leaf_reg': [0.2, 0.5]}
+# Define the parameter grid
+grid_search = GridSearchCV(estimator=catboost_classifier, param_grid=grid, cv=3, n_jobs=-1)
+
+# Fit the grid search to your data
+grid_search.fit(x_train, y_train)  # Replace X and y with your feature and label data
+# Get the best parameters and estimator
+# best: {'depth': 6, 'iterations': 80, 'l2_leaf_reg': 0.2, 'learning_rate': 0.05}
+best_params = grid_search.best_params_
+best_params['iterations'] = 4000
+# best_estimator = grid_search.best_estimator_
+# y_pred = best_estimator.predict(x_test)
+clf = CatBoostClassifier(**best_params)
+clf.fit(train_dataset, eval_set=val_dataset, plot=True)
+bow_val_acc = clf.eval_metrics(val_dataset, metrics=["Accuracy"])
+
+# Calculate accuracy
+y_pred = clf.predict(test_dataset)
+accuracy = accuracy_score(y_test, y_pred)
+
+# Calculate precision
+precision = precision_score(y_test, y_pred, average=None)
+recall = recall_score(y_test, y_pred, average=None)
+f1 = f1_score(y_test, y_pred, average=None)
+confusion = confusion_matrix(y_test, y_pred)
+
+performance_metrics = {
+    "val_accuracy": bow_val_acc,
+    "accuracy": accuracy,
+    "precision": precision,
+    "recall": recall,
+    "f1": f1,
+    "confusion_matrix": confusion
+}
+# save val acc
+file_path = 'catboost_info/bow_res.pkl'
+with open(file_path, 'wb') as file:
+    pickle.dump(performance_metrics, file)
+
+
+```
+
+
+Now run catboost on IDF data.
+
+```{python}
+x = idf()
+y = pd.read_csv("y.csv").iloc[:,1:]
+# split data train,val,test
+# Split the data into training (70%), validation (15%), and test (15%) sets
+x_train, x_temp, y_train, y_temp = train_test_split(x, y, test_size=0.3, random_state=42)
+
+x_val, x_test, y_val, y_test = train_test_split(x_temp, y_temp, test_size=0.5, random_state=42)
+
+# BRING DATA: SPLIT INTO TRAIN, VALIDATION AND TEST
+train_dataset = cb.Pool(x_train, y_train) 
+val_dataset = cb.Pool(x_val, y_val) 
+test_dataset = cb.Pool(x_test, y_test)
+# CREATE CATBOOST MODEL
+catboost_classifier = CatBoostClassifier()
+# CREATE GRID OF PARAMETERS
+grid = {'iterations': [80],
+        'learning_rate': [0.03, 0.05],
+        'depth': [4, 5, 6],
+        'l2_leaf_reg': [0.2, 0.5]}
+# Define the parameter grid
+grid_search = GridSearchCV(estimator=catboost_classifier, param_grid=grid, cv=3, n_jobs=-1)
+# Fit the grid search to your data
+grid_search.fit(x_train, y_train)  # Replace X and y with your feature and label data
+
+# Get the best parameters and estimator
+best_params = grid_search.best_params_
+best_params['iterations'] = 4000
+# best_estimator = grid_search.best_estimator_
+# y_pred = best_estimator.predict(x_test)
+clf = CatBoostClassifier(**best_params)
+clf.fit(train_dataset, eval_set=val_dataset, plot=True)
+idf_val_acc = clf.eval_metrics(val_dataset, metrics=["Accuracy"])
+
+# Calculate accuracy
+y_pred = clf.predict(test_dataset)
+accuracy = accuracy_score(y_test, y_pred)
+
+# Calculate precision
+precision = precision_score(y_test, y_pred, average=None)
+recall = recall_score(y_test, y_pred, average=None)
+f1 = f1_score(y_test, y_pred, average=None)
+confusion = confusion_matrix(y_test, y_pred)
+
+performance_metrics = {
+    "val_accuracy": idf_val_acc,
+    "accuracy": accuracy,
+    "precision": precision,
+    "recall": recall,
+    "f1": f1,
+    "confusion_matrix": confusion
+}
+# save val acc
+file_path = 'catboost_info/idf_res.pkl'
+with open(file_path, 'wb') as file:
+    pickle.dump(performance_metrics, file)
+
+```
+
+Now we do catboost on word embeddings.
+
+```{python}
+# split data train,val,test
+x_train, x_val, x_test, y_train, y_val, y_test = embeddings_data_prep()
+
+# BRING DATA: SPLIT INTO TRAIN, VALIDATION AND TEST
+train_dataset = cb.Pool(x_train, y_train) 
+val_dataset = cb.Pool(x_val, y_val) 
+test_dataset = cb.Pool(x_test, y_test)
+# CREATE CATBOOST MODEL
+catboost_classifier = CatBoostClassifier()
+# CREATE GRID OF PARAMETERS
+grid = {'iterations': [80],
+        'learning_rate': [0.03, 0.05],
+        'depth': [4, 5, 6],
+        'l2_leaf_reg': [0.2, 0.5]}
+# Define the parameter grid
+grid_search = GridSearchCV(estimator=catboost_classifier, param_grid=grid, cv=3, n_jobs=-1)
+# Fit the grid search to your data
+grid_search.fit(x_train, y_train)  # Replace X and y with your feature and label data
+
+#Get the best parameters and estimator
+best_params = grid_search.best_params_
+best_params['iterations'] = 4000
+# best_estimator = grid_search.best_estimator_
+# y_pred = best_estimator.predict(x_test)
+clf = CatBoostClassifier(**best_params)
+clf.fit(train_dataset, eval_set=val_dataset, plot=True)
+embed_val_acc = clf.eval_metrics(val_dataset, metrics=["Accuracy"])
+
+# Calculate accuracy
+y_pred = clf.predict(test_dataset)
+accuracy = accuracy_score(y_test, y_pred)
+
+# Calculate precision
+precision = precision_score(y_test, y_pred, average=None)
+recall = recall_score(y_test, y_pred, average=None)
+f1 = f1_score(y_test, y_pred, average=None)
+confusion = confusion_matrix(y_test, y_pred)
+
+performance_metrics = {
+    "val_accuracy": embed_val_acc,
+    "accuracy": accuracy,
+    "precision": precision,
+    "recall": recall,
+    "f1": f1,
+    "confusion_matrix": confusion
+}
+# save val acc
+file_path = 'catboost_info/embed_res.pkl'
+with open(file_path, 'wb') as file:
+    pickle.dump(performance_metrics, file)
+```
+
+
+Plot validation accuracy.
+```{python}
+with open('catboost_info/bow_res.pkl', 'rb') as file:
+    cbbow_res = pickle.load(file)
+
+with open('catboost_info/idf_res.pkl', 'rb') as file:
+    cbidf_res = pickle.load(file)
+
+with open('catboost_info/embed_res.pkl', 'rb') as file:
+    cbembed_res = pickle.load(file)
+
+
+cbbow_val = bow_res["val_accuracy"]["Accuracy"]
+cbidf_val = idf_res["val_accuracy"]["Accuracy"]
+cbembed_val = embed_res["val_accuracy"]["Accuracy"]
+cb_bow = range(4000)
+cb_idf = range(3995)
+cb_embed = range(130)
+
+
+fig, ax = plt.subplots()
+
+# Plot the validation values for each experiment
+ax.plot(cb_bow, cbbow_val, label='BoW')#, marker='o')
+ax.plot(cb_idf, cbidf_val, label='IDF')#, marker='s')
+ax.plot(cb_embed, cbembed_val, label='Embeddings')#, marker='^')
+
+# Set labels and title
+ax.set_xlabel('Epochs')
+ax.set_ylabel('Validation Accuracy')
+#ax.set_title('Validation Accuracy Comparison')
+ax.legend()
+plt.grid(True)
+plt.savefig('catboost_info/cb_val_acc.png')#, bbox_inches='tight')
+plt.show()
+
+```
 
