@@ -849,11 +849,10 @@ Make a function to train NB model on custom data.
 
 def naive_bayes(X_train, y_train, X_test, y_test):
     # Define a grid of hyperparameter values to search through
-    param_grid = {'alpha': [0.001, 0.01, 0.1, 1.0, 10.0]}
+    param_grid = {'alpha': [0.001, 0.01, 0.1, 1.0]}
     # Create a Multinomial Naive Bayes classifier
     nb_classifier = MultinomialNB()
     # Perform a grid search to find the best hyperparameter ('alpha')
-    # using cross-validation with 5 folds and optimizing for accuracy
     grid_search = GridSearchCV(nb_classifier, param_grid, cv=5, scoring='accuracy')
     # Fit the grid search to the training data
     grid_search.fit(X_train, np.argmax(y_train, axis=1))

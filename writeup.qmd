@@ -4,6 +4,7 @@ author:
   - "Wesley King"
 fig-cap-location: bottom
 
+
 ---
 
 ## Abstract
@@ -97,16 +98,22 @@ The word clouds below shows the most frequently used words by each president. In
 
 With the comprehensive description and analysis of the data completed, we can now delve into the intricate details of the models developed for this classification task.
 
-### Model descriptions
+### Modelling
 
 #### Feed-forward Neural Networks
 Feed-forward Neural networks are a subset of machine learning algorithms modeled after the human brain (Lim & Sung, 1970). They are composed of interconnected nodes or "neurons" that process information using a system of weights and bias values. These weights and bias values are adjusted during the training process to minimize the difference between the network's predicted output and the actual observed value. This updating of weights occurs threw a process known as backpropagation. The advantage of neural networks is their ability to identify complex patterns and relationships in data, making them especially useful for tasks such as image recognition, natural language processing, and predictive modeling.
 
-#### Naive Bayes Algorithm
-The Naive Bayes algorithm is a classification technique based on Bayes' Theorem, which describes the probability of an event based on prior knowledge of conditions that might be related to the event (Dogra et al., 2022). The algorithm is labeled "naive" because it assumes that all features in a dataset are mutually independent. Despite this oversimplification, Naive Bayes can be remarkably accurate, fast, and efficient, particularly with large datasets and it is widely used in text classification and recommendation systems.
+To optimize the performance of the Feed-forward Neural Network, a systematic exploration was undertaken. This involved conducting a grid search, wherein various configurations were evaluated. Specifically, we focused on 3 critical aspects of the network architecture: the number of hidden layers, the number of neurons within each layer, and the L2-regularization value applied. Our initial exploration encompassed three distinct network architectures. First, a model with two hidden layers was examined, followed by one with three hidden layers and finally a model with four hidden layers. The selection of the ultimate network architecture was based on the examination of the validation accuracy. Having determined the optimal architecture, we further refined our model through the application of L2-regularization. In particular, we applied a range of L2-regularization values from 0.01 to 0.1, with the intent of identifying the value that yielded the highest validation accuracy in the selected model. This approach was replicated for each of the datasets, namely BoW, TF-IDF, and word embeddings.
 
 #### Boosted Trees
 Boosted trees are an ensemble of, generally, weak learners, which are sequentially trained on the errors made by their predecessors. This iterative process involves assigning weights to training data points, emphasizing the samples that are consistently misclassified. The subsequent trees are then tailored to rectify these misclassifications, incrementally improving predictive accuracy over a large number of learners. CatBoost, as introduced by (Prokhorenkova et al., 2019), distinguishes itself from the other gradient boosting algorithms such as XGBoost and LightGBM through its unique approach to tree construction. Unlike its counterparts, CatBoost constructs balanced trees that exhibit a symmetrical structure. This implies that the feature-split pair which minimizes the loss function is uniformly selected and applied to all nodes within the same level of the tree.
+
+In the pursuit of optimizing the hyperparameters of the CatBoost algorithm, a grid search was conducted. The grid search was performed across a comprehensive parameter spacethe parameters `iterations`, `learning_rate`, `depth`, and `l2_leaf_reg`. `iterations` determines the number of boosting iterations during the training process. `learning_rate` governs the step size at each iteration while moving towards a minimum of the loss function, while `depth` defines the maximum depth of the decision tree. Finally, `l2_leaf_reg` contributes to controlling overfitting by penalizing the magnitude of the weights. For each combination of these parameters, the CatBoost algorithm was trained and validated, and the model's performance was assessed through the accuracy of the model on the validation set. The overarching objective was to identify the hyperparameter configuration that yielded the optimal model performance, as indicated by the validation accuracy.
+
+#### Naive Bayes
+The Naive Bayes algorithm is a classification technique based on Bayes' Theorem, which describes the probability of an event based on prior knowledge of conditions that might be related to the event (Dogra et al., 2022). The algorithm is labeled "naive" because it assumes that all features in a dataset are mutually independent. Despite this oversimplification, Naive Bayes can be remarkably accurate, fast, and efficient, particularly with large datasets and it is widely used in text classification.
+
+In order to optimise the Naive Bayes algorithm, the single `alpha` parameter was chosen such that the validation accuracy was once again maximised. `alpha` is instrumental in preventing zero proabilities occuring with words that are not found in all datasets, thus `alpha` being set to zero can greatly reduce the performance of the model. `alpha` is generally set to 1, also known as Laplace smoothing, however optimal values depend on the dataset.
 
 ### Model diagnostics
 
@@ -129,8 +136,15 @@ $$
 $$
 
 
-## Results(show all grid searches and final model values)
+## Results
 
+
+| Model          | BoW   | TF-IDF | Frequency Embeddings | BERT Embeddings|
+|----------------|-------|--------|------------|------------|
+| Neural Net     | 0.567 | 0.597  | 0.343      | 
+| Boosted Tree   | 0.549 | 0.555  | 0.348      | 
+| Naive Bayes    | 0.580 | 0.590  | 0.300      | 
+| ELECTRA-Base    |  |   |       | 0.580
 
 
 ## Discussion

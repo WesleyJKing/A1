@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Wesley King">
 
-<title>A Quarto Website - Who said that?</title>
+<title>A Quarto Website – writeup</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -94,7 +93,7 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./writeup.html" rel="" target="" aria-current="page">
- <span class="menu-text">Who said that?</span></a>
+ <span class="menu-text">Abstract</span></a>
   </li>  
 </ul>
             <div class="quarto-navbar-tools ms-auto">
@@ -119,10 +118,10 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#data-preprocessing" id="toc-data-preprocessing" class="nav-link" data-scroll-target="#data-preprocessing">Data preprocessing</a></li>
   <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda">EDA</a></li>
-  <li><a href="#model-descriptions" id="toc-model-descriptions" class="nav-link" data-scroll-target="#model-descriptions">Model descriptions</a></li>
+  <li><a href="#modelling" id="toc-modelling" class="nav-link" data-scroll-target="#modelling">Modelling</a></li>
   <li><a href="#model-diagnostics" id="toc-model-diagnostics" class="nav-link" data-scroll-target="#model-diagnostics">Model diagnostics</a></li>
   </ul></li>
-  <li><a href="#resultsshow-all-grid-searches-and-final-model-values" id="toc-resultsshow-all-grid-searches-and-final-model-values" class="nav-link" data-scroll-target="#resultsshow-all-grid-searches-and-final-model-values">Results(show all grid searches and final model values)</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
   <li><a href="#bibliography" id="toc-bibliography" class="nav-link" data-scroll-target="#bibliography">Bibliography</a></li>
   <li><a href="#figures" id="toc-figures" class="nav-link" data-scroll-target="#figures">Figures</a></li>
@@ -132,28 +131,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Who said that?</h1>
-</div>
 
-
-
-<div class="quarto-title-meta">
-
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Wesley King </p>
-          </div>
-  </div>
-    
-  
-    
-  </div>
-  
-
-</header>
 
 <section id="abstract" class="level2">
 <h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
@@ -232,15 +210,14 @@ ul.task-list li input[type="checkbox"] {
 </div>
 <p>With the comprehensive description and analysis of the data completed, we can now delve into the intricate details of the models developed for this classification task.</p>
 </section>
-<section id="model-descriptions" class="level3">
-<h3 class="anchored" data-anchor-id="model-descriptions">Model descriptions</h3>
+<section id="modelling" class="level3">
+<h3 class="anchored" data-anchor-id="modelling">Modelling</h3>
 <section id="feed-forward-neural-networks" class="level4">
 <h4 class="anchored" data-anchor-id="feed-forward-neural-networks">Feed-forward Neural Networks</h4>
 <p>Feed-forward Neural networks are a subset of machine learning algorithms modeled after the human brain (Lim &amp; Sung, 1970). They are composed of interconnected nodes or “neurons” that process information using a system of weights and bias values. These weights and bias values are adjusted during the training process to minimize the difference between the network’s predicted output and the actual observed value. This updating of weights occurs threw a process known as backpropagation. The advantage of neural networks is their ability to identify complex patterns and relationships in data, making them especially useful for tasks such as image recognition, natural language processing, and predictive modeling.</p>
-</section>
-<section id="naive-bayes-algorithm" class="level4">
-<h4 class="anchored" data-anchor-id="naive-bayes-algorithm">Naive Bayes Algorithm</h4>
-<p>The Naive Bayes algorithm is a classification technique based on Bayes’ Theorem, which describes the probability of an event based on prior knowledge of conditions that might be related to the event (Dogra et al., 2022). The algorithm is labeled “naive” because it assumes that all features in a dataset are mutually independent. Despite this oversimplification, Naive Bayes can be remarkably accurate, fast, and efficient, particularly with large datasets and it is widely used in text classification and recommendation systems.</p>
+<p>To optimize the performance of the Feed-forward Neural Network, a systematic exploration was undertaken. This involved conducting a grid search, wherein various configurations were evaluated. Specifically, we focused on two critical aspects of the network architecture: the number of hidden layers and the number of neurons within each layer. Our exploration encompassed three distinct network architectures. First, a model with two hidden layers was examined, followed by one with three hidden layers and finally a model with four hidden layers. The selection of the ultimate network architecture was based on the examination of the validation accuracy.</p>
+<p>Having determined the most promising architecture, we further refined our model through the application of L2-regularization techniques. Specifically, a range of L2-regularization values, spanning from 0.01 to 0.1, was systematically applied.</p>
+<p>This comprehensive approach was replicated for each of the distinct data sources at our disposal, namely Bag-of-Words (BoW), Term Frequency-Inverse Document Frequency (TF-IDF), and word embeddings. #### Naive Bayes The Naive Bayes algorithm is a classification technique based on Bayes’ Theorem, which describes the probability of an event based on prior knowledge of conditions that might be related to the event (Dogra et al., 2022). The algorithm is labeled “naive” because it assumes that all features in a dataset are mutually independent. Despite this oversimplification, Naive Bayes can be remarkably accurate, fast, and efficient, particularly with large datasets and it is widely used in text classification and recommendation systems.</p>
 </section>
 <section id="boosted-trees" class="level4">
 <h4 class="anchored" data-anchor-id="boosted-trees">Boosted Trees</h4>
@@ -263,8 +240,56 @@ ul.task-list li input[type="checkbox"] {
 \]</span></p>
 </section>
 </section>
-<section id="resultsshow-all-grid-searches-and-final-model-values" class="level2">
-<h2 class="anchored" data-anchor-id="resultsshow-all-grid-searches-and-final-model-values">Results(show all grid searches and final model values)</h2>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<table class="table">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 12%">
+<col style="width: 14%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>BoW</th>
+<th>TF-IDF</th>
+<th>Frequency Embeddings</th>
+<th>BERT Embeddings</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Neural Net</td>
+<td>0.567</td>
+<td>0.597</td>
+<td>0.343</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Boosted Tree</td>
+<td>0.549</td>
+<td>0.555</td>
+<td>0.348</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Naive Bayes</td>
+<td>0.580</td>
+<td>0.590</td>
+<td>0.300</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>ELECTRA-Base</td>
+<td></td>
+<td></td>
+<td></td>
+<td>0.580</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="discussion" class="level2">
 <h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
