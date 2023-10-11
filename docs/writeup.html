@@ -182,6 +182,10 @@ ul.task-list li input[type="checkbox"] {
 <p>Word embeddings are a type of word representation that allows words with similar meaning to have a similar representation. They are a distributed, numeric representation of text that is perhaps one of the key reasons for the impressive performance of deep learning methods on challenging NLP problems (Mikolov et al., 2013). State of the art Word embeddings map words in a vocabulary into a vector space, where the position of each word is learned from text data and is based on the context in which it is used. Thus typically, the position of a word within the learned vector space is referred to as its embedding. Word embeddings differ from BoW or TF-IDF datasets in several key ways. Firstly, word embeddings can capture much more complex constructs, like the semantic meaning of words. Words are thus defined by the surrounding words, which encourages the model to learn context. BoW and TF-IDF on the other hand disregard word order and context. Word embeddings can also have much lower dimensionality, which can reduce the compute time far greater than is the case with BoW and TF-IDF.</p>
 <p>However, for this study, a simple frequency based word embedding system is used which gives values to words based soley on the frequency of their occurence. In order to transform our dataset of a ‘Completion’ and ‘Prompt’ column into a word embedded dataset, 4 steps need to be followed. Firstly, an upper bound of 1000 unique words is set to restrict the number of words used in the embedding. This is done to increase efficiency. Each unique word in the text corpus needs to then be ranked in descending order of frequency, thus with the most frequently used word given a value of 1, and the second most frequently used word given a value of 2, etc. Then each sentence in the dataset should be iterated through, converting each word to the corresponding number in the frequency based ranking, while removing words entirely if they do not appear within the top 1000 most frequently used words. Finally, to ensure each sentence is embedded as a vector of the equal length, an upper bound of 50 was chosen such that vectors of length less than 50 were padded with zeros, and vectors of length over 50 were truncated to the first 50 integers.</p>
 </section>
+<section id="bert-embeddings" class="level4">
+<h4 class="anchored" data-anchor-id="bert-embeddings">BERT Embeddings</h4>
+<p>The BERT Embedding model (Devlin et al., 2019) is a pretrained model which takes one or two sentences and embeds it in a vector of numbers, similar to what we saw above. BERT’s state-of-the-art performance is based on new pre-training tasks, namely Masked Language Model(MLM) and Next Sentense Prediction (NSP), as well as a large enough dataset(3.3 billion words) and enough compute power to train BERT. Through MLM and NSP, BERT is able to attach meaning to words through recognizing the word itself, as well as by analyzing the words around it.</p>
+</section>
 </section>
 <section id="eda" class="level3">
 <h3 class="anchored" data-anchor-id="eda">EDA</h3>
@@ -215,13 +219,21 @@ ul.task-list li input[type="checkbox"] {
 <section id="feed-forward-neural-networks" class="level4">
 <h4 class="anchored" data-anchor-id="feed-forward-neural-networks">Feed-forward Neural Networks</h4>
 <p>Feed-forward Neural networks are a subset of machine learning algorithms modeled after the human brain (Lim &amp; Sung, 1970). They are composed of interconnected nodes or “neurons” that process information using a system of weights and bias values. These weights and bias values are adjusted during the training process to minimize the difference between the network’s predicted output and the actual observed value. This updating of weights occurs threw a process known as backpropagation. The advantage of neural networks is their ability to identify complex patterns and relationships in data, making them especially useful for tasks such as image recognition, natural language processing, and predictive modeling.</p>
-<p>To optimize the performance of the Feed-forward Neural Network, a systematic exploration was undertaken. This involved conducting a grid search, wherein various configurations were evaluated. Specifically, we focused on two critical aspects of the network architecture: the number of hidden layers and the number of neurons within each layer. Our exploration encompassed three distinct network architectures. First, a model with two hidden layers was examined, followed by one with three hidden layers and finally a model with four hidden layers. The selection of the ultimate network architecture was based on the examination of the validation accuracy.</p>
-<p>Having determined the most promising architecture, we further refined our model through the application of L2-regularization techniques. Specifically, a range of L2-regularization values, spanning from 0.01 to 0.1, was systematically applied.</p>
-<p>This comprehensive approach was replicated for each of the distinct data sources at our disposal, namely Bag-of-Words (BoW), Term Frequency-Inverse Document Frequency (TF-IDF), and word embeddings. #### Naive Bayes The Naive Bayes algorithm is a classification technique based on Bayes’ Theorem, which describes the probability of an event based on prior knowledge of conditions that might be related to the event (Dogra et al., 2022). The algorithm is labeled “naive” because it assumes that all features in a dataset are mutually independent. Despite this oversimplification, Naive Bayes can be remarkably accurate, fast, and efficient, particularly with large datasets and it is widely used in text classification and recommendation systems.</p>
+<p>To optimize the performance of the Feed-forward Neural Network, a systematic exploration was undertaken. This involved conducting a grid search, wherein various configurations were evaluated. Specifically, we focused on 3 critical aspects of the network architecture: the number of hidden layers, the number of neurons within each layer, and the L2-regularization value applied. Our initial exploration encompassed three distinct network architectures. First, a model with two hidden layers was examined, followed by one with three hidden layers and finally a model with four hidden layers. The selection of the ultimate network architecture was based on the examination of the validation accuracy. Having determined the optimal architecture, we further refined our model through the application of L2-regularization. In particular, we applied a range of L2-regularization values from 0.01 to 0.1, with the intent of identifying the value that yielded the highest validation accuracy in the selected model. This approach was replicated for each of the datasets, namely BoW, TF-IDF, and word embeddings.</p>
 </section>
 <section id="boosted-trees" class="level4">
 <h4 class="anchored" data-anchor-id="boosted-trees">Boosted Trees</h4>
 <p>Boosted trees are an ensemble of, generally, weak learners, which are sequentially trained on the errors made by their predecessors. This iterative process involves assigning weights to training data points, emphasizing the samples that are consistently misclassified. The subsequent trees are then tailored to rectify these misclassifications, incrementally improving predictive accuracy over a large number of learners. CatBoost, as introduced by (Prokhorenkova et al., 2019), distinguishes itself from the other gradient boosting algorithms such as XGBoost and LightGBM through its unique approach to tree construction. Unlike its counterparts, CatBoost constructs balanced trees that exhibit a symmetrical structure. This implies that the feature-split pair which minimizes the loss function is uniformly selected and applied to all nodes within the same level of the tree.</p>
+<p>In the pursuit of optimizing the hyperparameters of the CatBoost algorithm, a grid search was conducted. The grid search was performed across a comprehensive parameter spacethe parameters <code>iterations</code>, <code>learning_rate</code>, <code>depth</code>, and <code>l2_leaf_reg</code>. <code>iterations</code> determines the number of boosting iterations during the training process. <code>learning_rate</code> governs the step size at each iteration while moving towards a minimum of the loss function, while <code>depth</code> defines the maximum depth of the decision tree. Finally, <code>l2_leaf_reg</code> contributes to controlling overfitting by penalizing the magnitude of the weights. For each combination of these parameters, the CatBoost algorithm was trained and validated, and the model’s performance was assessed through the accuracy of the model on the validation set. The overarching objective was to identify the hyperparameter configuration that yielded the optimal model performance, as indicated by the validation accuracy.</p>
+</section>
+<section id="naive-bayes" class="level4">
+<h4 class="anchored" data-anchor-id="naive-bayes">Naive Bayes</h4>
+<p>The Naive Bayes algorithm is a classification technique based on Bayes’ Theorem, which describes the probability of an event based on prior knowledge of conditions that might be related to the event (Dogra et al., 2022). The algorithm is labeled “naive” because it assumes that all features in a dataset are mutually independent. Despite this oversimplification, Naive Bayes can be remarkably accurate, fast, and efficient, particularly with large datasets and it is widely used in text classification.</p>
+<p>In order to optimise the Naive Bayes algorithm, the single <code>alpha</code> parameter was chosen such that the validation accuracy was once again maximised. <code>alpha</code> is instrumental in preventing zero proabilities occuring with words that are not found in all datasets, thus <code>alpha</code> being set to zero can greatly reduce the performance of the model. <code>alpha</code> is generally set to 1, also known as Laplace smoothing, however optimal values depend on the dataset.</p>
+</section>
+<section id="electra" class="level4">
+<h4 class="anchored" data-anchor-id="electra">ELECTRA</h4>
+<p>The ELECTRA (Efficiently Learning an Encoder that Classifies Token Replacements Accurately)(Clark et al., 2020) model introduces a novel approach to pre-training in the domain of natural language processing (NLP). While traditional pre-training methods like BERT rely on Masked Language Modeling (MLM), where input tokens are partially obscured by replacing them with a special token ([MASK]) and the model is trained to predict the original tokens, ELECTRA takes a distinct and more data-efficient route. ELECTRA replaces select tokens in the input text with plausible alternatives drawn from a generator network. The important change is in the subsequent training objective: rather than training a model to predict the original identities of the corrupted tokens, ELECTRA trains a discriminative model, like a Generative Adverserial Network (GAN) (Goodfellow et al., 2014). The Discriminative model’s task is thus to determine whether each token in the corrupted input was replaced by a sample generated from the network or if it is the original, unchanged token.</p>
 </section>
 </section>
 <section id="model-diagnostics" class="level3">
@@ -242,6 +254,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>The table below illustrates the test set accuracy for various machine learning models across the different datasets. Notably, we observe variations in accuracy across models and data sources, which highlight the influence of both the model architecture and the data representation technique. The highest test set accuracy is achieved with the Neural Network on the TF-IDF, with a score of 59.7%, while the Naive Bayes model performs second best also on the TF-IDF dataset with a score of 59%. The Boosted Tree performs best on the Frequency embeddings with a score of 34.8%.</p>
 <table class="table">
 <colgroup>
 <col style="width: 29%">
@@ -290,6 +303,124 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
+<p>Talk about F1-scores below.</p>
+<table class="table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 16%">
+<col style="width: 7%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Model Type</th>
+<th>Dataset</th>
+<th>P1</th>
+<th>P2</th>
+<th>P3</th>
+<th>P4</th>
+<th>P5</th>
+<th>P6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Neural Net</strong></td>
+<td>BoW</td>
+<td>0.098</td>
+<td>0.442</td>
+<td>0.551</td>
+<td>0.606</td>
+<td>0.612</td>
+<td>0.615</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>TF-IDF</td>
+<td>0.045</td>
+<td>0.481</td>
+<td>0.572</td>
+<td>0.647</td>
+<td>0.615</td>
+<td>0.583</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Embeddings</td>
+<td>0.0</td>
+<td>0.042</td>
+<td>0.219</td>
+<td>0.112</td>
+<td>0.432</td>
+<td>0.0</td>
+</tr>
+<tr class="even">
+<td><strong>Catboost</strong></td>
+<td>BoW</td>
+<td>0.044</td>
+<td>0.465</td>
+<td>0.532</td>
+<td>0.583</td>
+<td>0.612</td>
+<td>0.381</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>TF-IDF</td>
+<td>0.047</td>
+<td>0.493</td>
+<td>0.545</td>
+<td>0.581</td>
+<td>0.612</td>
+<td>0.3</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Embeddings</td>
+<td>0.0</td>
+<td>0.008</td>
+<td>0.39</td>
+<td>0.235</td>
+<td>0.453</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td><strong>Naive Bayes</strong></td>
+<td>BoW</td>
+<td>0.06</td>
+<td>0.46</td>
+<td>0.58</td>
+<td>0.65</td>
+<td>0.62</td>
+<td>0.08</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>TF-IDF</td>
+<td>0.04</td>
+<td>0.5</td>
+<td>0.6</td>
+<td>0.65</td>
+<td>0.65</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Embeddings</td>
+<td>0.02</td>
+<td>0.11</td>
+<td>0.31</td>
+<td>0.18</td>
+<td>0.47</td>
+<td>0.01</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussion Section:</strong> The accuracy table provides valuable insights into the performance of different machine learning models across multiple data sources. Noteworthy observations include the relatively high accuracy achieved by the “Neural Net” and “Boosted Tree” models when applied to TF-IDF data, underscoring the suitability of this data representation for these models. In contrast, the “Naive Bayes” model excels with BoW data. Additionally, the introduction of BERT Embeddings, represented by the “ELECTRA-Base” model, demonstrates significantly enhanced accuracy, suggesting the effectiveness of pre-trained embeddings in capturing complex patterns within the data. These findings emphasize the importance of model-data compatibility and the potential benefits of leveraging advanced embeddings for improved predictive performance. The table offers a comprehensive view of the interplay between models and data sources, shedding light on their combined influence on the accuracy of the predictive models.</p>
 </section>
 <section id="discussion" class="level2">
 <h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
@@ -327,6 +458,7 @@ ul.task-list li input[type="checkbox"] {
 <p>Buitinck, L. et al., 2013. API design for machine learning software: experiences from the scikit-learn project. In ECML PKDD Workshop: Languages for Data Mining and Machine Learning. pp.&nbsp;108–122.</p>
 <p>Luhn, H.P. (1957) A Statistical Approach to Mechanized Encoding and Searching of Literary Information, IEEE Xplore. Available at: https://ieeexplore.ieee.org/document/5392697 (Accessed: 09 October 2023).</p>
 <p>Mikolov, T. et al.&nbsp;(2013) Efficient estimation of word representations in vector space, arXiv.org. Available at: https://arxiv.org/abs/1301.3781 (Accessed: 09 October 2023).</p>
+<p>Goodfellow, I.J. et al.&nbsp;(2014) Generative Adversarial Networks, arXiv.org. Available at: https://arxiv.org/abs/1406.2661 (Accessed: 11 October 2023).</p>
 </section>
 <section id="figures" class="level2">
 <h2 class="anchored" data-anchor-id="figures">Figures</h2>
