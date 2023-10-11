@@ -116,7 +116,8 @@ def bow_x():
 
 # function to return names of presidents
 def bow_y():
-  y = names['completion']
+  data = pd.read_csv("data.csv")
+  y = data['completion']
   return(y)
 
 ```
@@ -131,7 +132,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 ```{python}
 
-def tf_idf():
+def idf():
     df = pd.read_csv("data.csv").iloc[:,1:]
     sentences = df['prompt'].tolist()
 
@@ -143,6 +144,8 @@ def tf_idf():
 
     # Create a new dataframe with TF-IDF values
     tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf_vectorizer.get_feature_names_out())
+    return tfidf_df
+
 ```
 
 ## Word Embedding
@@ -324,7 +327,7 @@ num_epochs = 20
 def create_custom_model(neurons_per_layer, l2_reg_value):
     # Create a Sequential model
     model = Sequential()
-
+    neurons_per_layer = [500, 200]
     # Add the input layer with L2 regularization
     model.add(Dense(neurons_per_layer[0], activation='relu', input_dim=inp_dim, kernel_regularizer=l2(l2_reg_value)))
 
@@ -361,9 +364,10 @@ def create_custom_model(neurons_per_layer, l2_reg_value):
 
     # Calculate accuracy, precision, recall, and F1 score
     accuracy = accuracy_score(y_true_classes, y_pred_classes)
-    precision = precision_score(y_true_classes, y_pred_classes, average='weighted')
-    recall = recall_score(y_true_classes, y_pred_classes, average='weighted')
-    f1 = f1_score(y_true_classes, y_pred_classes, average='weighted')
+    precision = precision_score(y_true_classes, y_pred_classes, average=None)
+    recall = recall_score(y_true_classes, y_pred_classes, average=None)
+    f1 = f1_score(y_true_classes, y_pred_classes,
+     average=None)
 
     # print('Accuracy on test data: {:.2f}%'.format(accuracy * 100))
     # print('Precision on test data: {:.2f}'.format(precision))
@@ -383,6 +387,8 @@ def create_custom_model(neurons_per_layer, l2_reg_value):
         }
 
 ```
+
+
 
 Create 3 model architectures, and implement L2 regularization on best performing one. First with BoW data.
 
@@ -413,6 +419,8 @@ bow_results_2_01["test_accuracy"] #0.6038544178009033
 
 bow_results_2_0 = create_custom_model(neurons_per_layer=[500,200], l2_reg_value=0)
 
+```
+```{python}
 file_path = 'nn_res/bow_results_2_0.pkl'
 with open(file_path, 'wb') as file:
     pickle.dump(bow_results_2_0, file)

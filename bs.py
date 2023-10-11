@@ -1,6 +1,21 @@
 import pickle
-pickle_file_path = 'naive_bayes_res/embed_naive_bayes_res.pkl'
+# nb
+pickle_file_path = 'catboost_info/embed_res.pkl'
 
 with open(pickle_file_path, 'rb') as file:
-    pickle.load(file)
+    dat = pickle.load(file)
+dat["f1"]
+type(dat)
+# f1score
 
+# bow_nn [0.09756098, 0.4415011 , 0.55093257, 0.60632184, 0.61192351, 0.61538462]
+# idf_nn [0.04545455, 0.48083624, 0.5718232 , 0.64661654, 0.61478599, 0.58333333]
+# embed_nn [0.        , 0.04181185, 0.21868787, 0.11182796, 0.43194444, 0]
+
+# bow_catboost [0.04444444, 0.46530612, 0.5316092 , 0.58320127, 0.61153428, 0.38095238]
+# idf_catboost [0.04651163, 0.49315068, 0.54520167, 0.58135861, 0.61187215, 0.3]
+# embed_catboost [0.        , 0.00823045, 0.38961039, 0.23506744, 0.45301205, 0.]
+
+# bow_naive_bayes [0.06, 0.46, 0.58, 0.65,  0.62,  0.08 ]
+# idf_naive_bayes [0.04, 0.50, 0.60, 0.65, 0.65, 0.00]
+# embed_naive_bayes [0.02 0.11 0.31 0.18 0.47 0.01]

@@ -75,6 +75,10 @@ Word embeddings are a type of word representation that allows words with similar
 
 However, for this study, a simple frequency based word embedding system is used which gives values to words based soley on the frequency of their occurence. In order to transform our dataset of a 'Completion' and 'Prompt' column into a word embedded dataset, 4 steps need to be followed. Firstly, an upper bound of 1000 unique words is set to restrict the number of words used in the embedding. This is done to increase efficiency. Each unique word in the text corpus needs to then be ranked in descending order of frequency, thus with the most frequently used word given a value of 1, and the second most frequently used word given a value of 2, etc. Then each sentence in the dataset should be iterated through, converting each word to the corresponding number in the frequency based ranking, while removing words entirely if they do not appear within the top 1000 most frequently used words. Finally, to ensure each sentence is embedded as a vector of the equal length, an upper bound of 50 was chosen such that vectors of length less than 50 were padded with zeros, and vectors of length over 50 were truncated to the first 50 integers.
 
+#### BERT Embeddings
+
+The BERT Embedding model (Devlin et al., 2019) is a pretrained model which takes one or two sentences and embeds it in a vector of numbers, similar to what we saw above. BERT’s state-of-the-art performance is based on new pre-training tasks, namely Masked Language Model(MLM) and Next Sentense Prediction (NSP), as well as a large enough dataset(3.3 billion words) and enough compute power to train BERT. Through MLM and NSP, BERT is able to attach meaning to words through recognizing the word itself, as well as by analyzing the words around it.
+
 ### EDA
 
 The dataset is comprised of 36 speeches made by South African presidents Zuma, Mbeki, Ramaphosa, Mandela, Motlanthe, and de Klerk, from the years 1994 to 2023. The barplot below displays the number of sentences spoken by each president. Significant variation in the number of sentences associated with each president can be seen. Notably, Jacob Zuma had the highest number of sentences attributed to him, totaling 2,629 sentences. Thabo Mbeki followed closely with 2,397 sentences, while Cyril Ramaphosa had 2,279 sentences. Nelson Mandela had 1,671 sentences in the dataset. Kgalema Motlanthe and F.W. de Klerk had relatively fewer sentences, with 264 and 97 sentences, respectively.
@@ -115,6 +119,9 @@ The Naive Bayes algorithm is a classification technique based on Bayes' Theorem,
 
 In order to optimise the Naive Bayes algorithm, the single `alpha` parameter was chosen such that the validation accuracy was once again maximised. `alpha` is instrumental in preventing zero proabilities occuring with words that are not found in all datasets, thus `alpha` being set to zero can greatly reduce the performance of the model. `alpha` is generally set to 1, also known as Laplace smoothing, however optimal values depend on the dataset.
 
+#### ELECTRA
+The ELECTRA (Efficiently Learning an Encoder that Classifies Token Replacements Accurately)(Clark et al., 2020) model introduces a novel approach to pre-training in the domain of natural language processing (NLP). While traditional pre-training methods like BERT rely on Masked Language Modeling (MLM), where input tokens are partially obscured by replacing them with a special token ([MASK]) and the model is trained to predict the original tokens, ELECTRA takes a distinct and more data-efficient route. ELECTRA replaces select tokens in the input text with plausible alternatives drawn from a generator network. The important change is in the subsequent training objective: rather than training a model to predict the original identities of the corrupted tokens, ELECTRA trains a discriminative model, like a Generative Adverserial Network (GAN) (Goodfellow et al., 2014). The Discriminative model's task is thus to determine whether each token in the corrupted input was replaced by a sample generated from the network or if it is the original, unchanged token.
+
 ### Model diagnostics
 
 Numerous model evaluation scores were consulted during the modelling process which allowed for the relative and absolute competence of the models to be seen. Amongst the metrics investigated, is the training accuracy, which shows the ability of the model to learn from the training set, however cannot be taken as absolute model performance. For this, the out-of-sample, test set accuracy, which measures the proportion of sentences correctly attriuted to a president, must be consulted. This provides a stong indicication for the models performance as it is performed on unseen data. Precision, which measures the proportion of true positive predictions for each class among all positive predictions for that class was also consulted. This allows for a more indepth understanding of how the model performs on each class.
@@ -138,6 +145,8 @@ $$
 
 ## Results
 
+The table below illustrates the test set accuracy for various machine learning models across the different datasets. Notably, we observe variations in accuracy across models and data sources, which highlight the influence of both the model architecture and the data representation technique. The highest test set accuracy is achieved with the Neural Network on the TF-IDF, with a score of 59.7%, while the Naive Bayes model performs second best also on the TF-IDF dataset with a score of 59%. The Boosted Tree performs best on the Frequency embeddings with a score of 34.8%.
+
 
 | Model          | BoW   | TF-IDF | Frequency Embeddings | BERT Embeddings|
 |----------------|-------|--------|------------|------------|
@@ -146,6 +155,24 @@ $$
 | Naive Bayes    | 0.580 | 0.590  | 0.300      | 
 | ELECTRA-Base    |  |   |       | 0.580
 
+
+Talk about F1-scores below.
+
+| Model Type    | Dataset          | P1    | P2         | P3         | P4         | P5         | P6         |
+|--------------|----------------|-------|------------|------------|------------|------------|------------|
+| **Neural Net** | BoW       | 0.098 | 0.442      | 0.551      | 0.606      | 0.612      | 0.615      |
+|             | TF-IDF          | 0.045 | 0.481      | 0.572      | 0.647      | 0.615      | 0.583      |
+|             | Embeddings      | 0.0   | 0.042      | 0.219      | 0.112      | 0.432      | 0.0        |
+| **Catboost** | BoW | 0.044 | 0.465      | 0.532      | 0.583      | 0.612      | 0.381      |
+|             | TF-IDF  | 0.047 | 0.493      | 0.545      | 0.581      | 0.612      | 0.3        |
+|             | Embeddings| 0.0   | 0.008      | 0.39       | 0.235      | 0.453      | 0.0        |
+| **Naive Bayes** | BoW | 0.06  | 0.46       | 0.58       | 0.65       | 0.62       | 0.08       |
+|             | TF-IDF  | 0.04  | 0.5        | 0.6        | 0.65       | 0.65       | 0.0        |
+|             | Embeddings| 0.02  | 0.11       | 0.31       | 0.18       | 0.47       | 0.01       |
+
+
+**Discussion Section:**
+The accuracy table provides valuable insights into the performance of different machine learning models across multiple data sources. Noteworthy observations include the relatively high accuracy achieved by the "Neural Net" and "Boosted Tree" models when applied to TF-IDF data, underscoring the suitability of this data representation for these models. In contrast, the "Naive Bayes" model excels with BoW data. Additionally, the introduction of BERT Embeddings, represented by the "ELECTRA-Base" model, demonstrates significantly enhanced accuracy, suggesting the effectiveness of pre-trained embeddings in capturing complex patterns within the data. These findings emphasize the importance of model-data compatibility and the potential benefits of leveraging advanced embeddings for improved predictive performance. The table offers a comprehensive view of the interplay between models and data sources, shedding light on their combined influence on the accuracy of the predictive models.
 
 ## Discussion
 
@@ -215,6 +242,7 @@ Luhn, H.P. (1957) A Statistical Approach to Mechanized Encoding and Searching of
 
 Mikolov, T. et al. (2013) Efficient estimation of word representations in vector space, arXiv.org. Available at: https://arxiv.org/abs/1301.3781 (Accessed: 09 October 2023). 
 
+Goodfellow, I.J. et al. (2014) Generative Adversarial Networks, arXiv.org. Available at: https://arxiv.org/abs/1406.2661 (Accessed: 11 October 2023). 
 
 ## Figures
 
