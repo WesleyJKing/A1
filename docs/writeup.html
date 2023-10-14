@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Wesley King">
 
-<title>A Quarto Website – writeup</title>
+<title>A Quarto Website - Who said that?</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -93,7 +94,7 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./writeup.html" rel="" target="" aria-current="page">
- <span class="menu-text">Abstract</span></a>
+ <span class="menu-text">Who said that?</span></a>
   </li>  
 </ul>
             <div class="quarto-navbar-tools ms-auto">
@@ -123,6 +124,8 @@ ul.task-list li input[type="checkbox"] {
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#appendix" id="toc-appendix" class="nav-link" data-scroll-target="#appendix">Appendix</a></li>
   <li><a href="#bibliography" id="toc-bibliography" class="nav-link" data-scroll-target="#bibliography">Bibliography</a></li>
   <li><a href="#figures" id="toc-figures" class="nav-link" data-scroll-target="#figures">Figures</a></li>
   </ul>
@@ -131,38 +134,59 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Who said that?</h1>
+</div>
 
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Wesley King </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
 
 <section id="abstract" class="level2">
 <h2 class="anchored" data-anchor-id="abstract">Abstract</h2>
-<p>This study explores the challenging task of identifying the authors of South African presidential speeches from State of the Nation Addresses between 1994 and 2023. Using a combination of machine learning techniques, including neural networks, gradient boosting trees, and Electra Small language model, we examine the nuances of political discourse analysis. Our experiments demonstrate the effectiveness of each method. Electra Small, a powerful language model, excels in authorship prediction due to its ability to capture intricate linguistic patterns. However, this advantage comes at the cost of a high parameter count. Our findings indicate that traditional machine learning approaches like neural networks and gradient boosting trees remain vital, especially in resource-constrained contexts. These methods offer competitive accuracy with lower computational demands, making them practical for real-time authorship prediction. This research advances our understanding of speech authorship prediction, emphasizing the need to balance accuracy and resource efficiency in such endeavors.</p>
+<p>This study analyses the intricate realm of authorship identification in South African presidential speeches, specifically those delivered during State of the Nation Addresses (SONA) spanning the period from 1994 to 2023. Employing a diverse array of machine learning (ML) techniques, including neural networks, gradient boosting trees, naive bayes, and the Electra Small language model, our research assesses the efficacy of each method in predicting authorship. Notably, the Feed-Forward Neural Network and Electra Small language model emerge as standout performers, excelling in their relative classification ability. However, this comparable performance between ELECTRA and the smaller ML models demonstrates the enduring importance of smaller ML models particularly in scenarios with limited computational resources. Their competitive accuracy, combined with a lower computational burden, positions the simpler ML models as pragmatic choices for real-time authorship text classification tasks.</p>
 </section>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>The study of presidential speeches has been a focal point of political analysis for decades, offering insights into the rhetoric, style, and policy priorities of various administrations. With the recent rise in popularity of machine learning, and specifically Natural Language Processing (NLP), a new approach has emerged: text classification. This paper performs the task of classifying sentences based on the South African presidents who said them. The aim is to compare the performance of large language models (LLMs) with smaller, more efficient models in this classification task.</p>
-<p>The need for this work arises from the increasing prevalence and importance of LLMs in fields such as NLP and computational linguistics. These models have shown remarkable performance in various tasks, including text generation, translation, question answering, and more (Naveed et al., 2023). However, their development and running costs, as well as their computational requirements, make them less accessible for many organizations (Hart et al., 2023). This creates a gap between what the scientific community currently has - powerful but expensive and resource-intensive models - and what it wants - equally effective models that are more efficient and accessible.</p>
-<p>To address this need, we have conducted a comparison of LLMs and smaller, fine-tuned models in the task of classifying sentences of South African presidents. We have explored both the theoretical underpinnings of these models and their practical performance in the classification task. Fine-tuned models are generally smaller than their LLM counterparts and are derived from existing language models. They can perform tasks with less data and computational power compared to large language models.</p>
-<p>The remainder of this paper is structured as follows: we first provide a comprehensive background on large language models and fine-tuned models, discussing their mechanisms, strengths, and weaknesses. We then detail our methodology for comparing these models in the task of classifying presidential sentences. Following this, we present and discuss our results, offering insights into the performance of large and fine-tuned models in this context. Finally, we conclude with a reflection on the implications of our findings for the future development and use of language models in political analysis and beyond.</p>
+<p>The study of presidential speeches has been a focal point of political analysis for decades, offering insights into the rhetoric, style, and policy priorities of various administrations. With the recent rise in popularity of machine learning (ML), and specifically Natural Language Processing (NLP), a new task has emerged: text classification. This paper performs the task of classifying sentences based on the South African presidents who said them. The aim is to compare the performance of large, transformer-based language models with smaller, more efficient models in this classification task.</p>
+<p>The need for this work arises from the increasing prevalence and importance of computationally expensive transformers in fields such as NLP and computational linguistics. These models have shown remarkable performance in various tasks, including text generation, translation, question answering, and more (Naveed et al., 2023). However, their development and running costs, as well as their computational requirements, make them less accessible for many organizations (Hart et al., 2023). This creates a gap between what the scientific community currently has - powerful but expensive and resource-intensive models - and what it wants - equally effective models that are more efficient and accessible.</p>
+<p>To address this need, we have conducted a comparison of a large language model (LLM) and smaller, ML models in the task of classifying sentences of South African presidents. We have explored both the theoretical underpinnings of these models and their practical performance in the classification task.</p>
+<p>The remainder of this paper is structured as follows: we first provide a comprehensive background on the models used in NLP, discussing their mechanisms, strengths, and weaknesses. We then detail our methodology for comparing these models in the task of classifying presidential sentences. Following this, we present and discuss our results, offering insights into the performance of the models. Finally, we conclude with a reflection on the implications of our findings for the future development and use of language models in political analysis and beyond.</p>
 </section>
 <section id="literature-review" class="level2">
 <h2 class="anchored" data-anchor-id="literature-review">Literature review</h2>
-<p>Natural Language Processing (NLP) has been utilized extensively for diverse tasks. These tasks range from classification in healthcare [(Ong et al., 2010), (Fujita et al., 2012), (Ravindranath et al., 2017), (McKnight, 2012), (Wong &amp; Akiyama, 2013), (Gerdes &amp; Hardahl, 2013)], to predicting financial trends [(Wen et al., 2019), (Wu et al., 2012), (Al-Rubaiee et al., 2015), (Vijayan and Potey, 2016), (Nassirtoussi et al., 2015), (Nikfarjam et al., 2010)], to applications in corporate finance [(Guo et al., 2016), (Shahi et al., 2014), (Holton, 2009), (Chan and Franklin, 2011), (Humpherys et al., 2011), (Loughran and McDonald, 2011)] and the techniques and methodologies employed vary based on the specifics of the problem at hand.</p>
-<p>For example (Dogra et al., 2022) focusses on exploring cutting-edge learning models implemented on a language dataset. Amongst the models investigated are Naive Bayes models. Through a comprehensive review of this algorithm, the authors provide valuable insights into the nuances of text classification, shedding light the strengths and limitations of the Naive Bayes method. (Dogra et al., 2022) also analyses data formatting techniques such as bag-of-words (BOW), Term Frequency - Inverse Document Frequency (TF-IDF), and word embeddings. BOW is most commonly used in document transformation, however suffers from high dimensionality, resulting in slow compute time. TF-IDF overcomes some weaknesses of BOW, as the text is represented with weighted frequencies, however still suffers from high dimensionality which affects a model’s rate of learning. Word embeddings allow for a reduced dimensional dataset to be analysed by representing each sentence by a vector of fixed size, where each unique word is a unique integer. This allows for sentences to be represented in high dimensional space.</p>
-<p>In 2019, (Devlin et al., 2019) developed the language model known as BERT which borrowed the Encoder from the previously created Transformer architecture (Vaswani et al., 2017). Although upon its release BERT set new standards for numerous NLP related performance metrics, it does have its shortcomings. Due to the nature of BERT’s training approach being one of masking a fraction of the input tokens and asking the model to predict the token being masked, it doesn’t efficiently utilize all of it’s data, with predictions being made on only 15% of the tokens in each batch (Devlin et al., 2019). (Clark et al., 2020) developed ELECTRA to handle just this problem. Instead of training a model to predict the original identity of a corrupted token, ELECTRA is a discriminator trained to predict whether each token in the corrupted input was replaced by a generator sample or not. This approach to training is shown to be more efficient than the Masked Language Model apporach to training because the task is performed on all input tokens, as oppose to just a select few, and it resulted in ELECTRA achieving a better General Language Understanding Evaluation (GLUE) score than BERT.</p>
+<p>Natural Language Processing (NLP) has been utilized extensively for diverse tasks. These tasks range from classification in healthcare [(Ong et al., 2010), (Fujita et al., 2012), (Ravindranath et al., 2017), (McKnight, 2012), (Wong &amp; Akiyama, 2013), (Gerdes &amp; Hardahl, 2013)], to predicting financial trends [(Wen et al., 2019), (Wu et al., 2012), (Al-Rubaiee et al., 2015), (Vijayan and Potey, 2016), (Nassirtoussi et al., 2015), (Nikfarjam et al., 2010)], to applications in corporate finance [(Guo et al., 2016), (Shahi et al., 2014), (Holton, 2009), (Chan and Franklin, 2011), (Humpherys et al., 2011), (Loughran and McDonald, 2011)] and the techniques and methodologies employed vary based on the specifics of the problem.</p>
+<p>For example (Dogra et al., 2022) focusses on exploring cutting-edge learning models implemented on a language dataset. Amongst the models investigated are Naive Bayes models. Through a comprehensive review of this algorithm, the authors provide valuable insights into the nuances of text classification, shedding light on the strengths and limitations of the Naive Bayes method. (Dogra et al., 2022) also analyses data formatting techniques such as bag-of-words (BoW), Term Frequency - Inverse Document Frequency (TF-IDF), and word embeddings. BoW is most commonly used in document transformation, however suffers from high dimensionality, resulting in slow compute time. TF-IDF overcomes some weaknesses of BoW, as the text is represented with weighted frequencies, however still suffers from high dimensionality which slows a model’s rate of learning. Word embeddings allow for a reduced dimensional dataset to be analysed by representing each sentence by a vector of fixed size, where each unique word is a unique integer, dependent on the word and its context.</p>
+<p>In 2019, (Devlin et al., 2019) developed the language model known as BERT which borrowed the Encoder from the previously created Transformer architecture (Vaswani et al., 2017). Although upon its release BERT set new standards for numerous NLP related performance metrics, it does have its shortcomings. Due to the nature of BERT’s training approach being one of masking a fraction of the input tokens and asking the model to predict the token being masked, it doesn’t efficiently utilize all of it’s data, with predictions being made on only 15% of the tokens in each batch (Devlin et al., 2019). (Clark et al., 2020) developed ELECTRA to handle just this problem. Instead of training a model to predict the original identity of a corrupted token, ELECTRA is a discriminator trained to predict whether each token in the corrupted input was replaced by a generator sample or not. This approach to training is shown to be more efficient than the Masked Language Model approach to training because the task is performed on all input tokens, as oppose to just a select few, and it resulted in ELECTRA achieving a better General Language Understanding Evaluation (GLUE) score than BERT.</p>
 </section>
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
 <section id="data-preprocessing" class="level3">
 <h3 class="anchored" data-anchor-id="data-preprocessing">Data preprocessing</h3>
-<p>To get the data into a format compliant with the chosen language models, numerous cleaning operations had to be performed. Firstly, to identify the presidents associated with each speech, a regular expression pattern was defined. This pattern extracted the president’s name from the document names, which are named after the president which delivered the speech contained in the text document. A tabular data structure was then initialized with two columns: ‘Completion’ and ‘Prompt’. This DataFrame serves as the container for organizing the processed data. For each data file, the content is read in while disregarding the initial two lines, which contains the date and an empty line. The content is stored as a list of lines. These lines are then concatenated into a single text document, before being stripped of symbols, such as ‘’. The full text is then tokenized into sentences, with the name of the president inserted into the ‘Presidents’ column next to each sentence. Stop words where then removed too, which reduces the amount of unnessecary data. This resulted in a dataset with 9337 sentences, and served as a starting point for 3 other datasets to be formed.</p>
+<p>To get the data into a format compliant with the chosen language models, numerous cleaning operations had to be performed. Firstly, to identify the presidents associated with each speech, a regular expression pattern was defined. This pattern extracted the president’s name from the document names, which are named after the president which delivered the speech contained in the text document. A tabular data structure was then initialized with two columns: ‘Completion’ and ‘Prompt’. This DataFrame serves as the container for organizing the processed data. For each data file, the content is read in while disregarding the initial two lines, which contains the date and an empty line. The content is stored as a list of lines. These lines are then concatenated into a single text document, before being stripped of symbols, such as ‘’. The full text is then tokenized into sentences, with the name of the president inserted into the ‘completion’ column next to each sentence. Stop words where then removed too, which reduces the amount of unnessecary data. This resulted in a dataset with 9337 sentences, and served as a starting point for 3 other datasets to be formed.</p>
 <section id="bag-of-words-bow" class="level4">
 <h4 class="anchored" data-anchor-id="bag-of-words-bow">Bag of Words (BoW)</h4>
 <p>BoW (Harris, 1954) is a data manipulating technique which has a variety of use cases, such as in Image Classification, Text Classification and Visual Scene Classification (Qader et al., 2019). In the context of visual scene classification, the BoW approach allows for clusters of local descriptors to be extracted from the images, where the order of the clusters is not important. In the domain of text classification, which is the field of this study, the BoW methodology entails counting the number of occurrences associated with each word within a given sentence, while disregarding the inherent word order and grammatical structure. The fundamental concept underlying BoW is the generation of a histogram, capturing the frequency distribution of words within textual documents or the prevalence of features within images, thereby creating a representative profile for the respective sentence or image which attempt to capture the key aspects. Notably, the BoW technique is characterized by its computational simplicity, rendering it more accessible and conceptually straightforward than many alternative classification methodologies (Qader et al., 2019). Consequently, BoW-based systems have demonstrated the potential to achieve improved performance metrics on widely accepted benchmarks for evaluating text and image classification algorithms.</p>
-<p>In order to transform our dataframe consisting of a ‘Completion’ and ‘Prompt’ column into a BoW dataset, 3 steps need to be followed. Firstly, Text Tokenization needs to occur, which involves the segmentation of input text into individual words or terms, commonly referred to as tokens. Then a vocabulary has to be formed which is a dictionary comprising of all the distinct words (tokens) identified within the text corpus. Each of these unique words is associated with a specific integer index. Finally, Token Frequency Counting must occur. At this stage, the number of occurrences of each word (token) within every sentence present in the text corpus must be counted. The outcome is a matrix where each row corresponds to a sentence, and each column corresponds to a unique word from the vocabulary. The entries in this matrix reflect the frequency (count) of each word within each sentence. Thus, if the matrix is called <span class="math inline">\(D\)</span>, entry <span class="math inline">\(D_{i,j}\)</span> is the number of times word <span class="math inline">\(j\)</span> appeared in sentence <span class="math inline">\(i\)</span>. These 3 steps are easily performed using <code>sklearn</code> (Buitinck et al., 2013) and more specifically the <code>CountVectorizer()</code> and <code>fit_transform()</code> functions.</p>
+<p>In order to transform our dataframe consisting of a ‘completion’ and ‘prompt’ column into a BoW dataset, 3 steps need to be followed. Firstly, Text Tokenization needs to occur, which involves the segmentation of input text into individual words or terms, commonly referred to as tokens. Then a vocabulary has to be formed which is a dictionary comprising of all the distinct words (tokens) identified within the text corpus. Each of these unique words is associated with a specific integer index. Finally, Token Frequency Counting must occur. At this stage, the number of occurrences of each word (token) within every sentence present in the text corpus must be counted. The outcome is a matrix where each row corresponds to a sentence, and each column corresponds to a unique word from the vocabulary. The entries in this matrix reflect the frequency (count) of each word within each sentence. Thus, if the matrix is called <span class="math inline">\(D\)</span>, entry <span class="math inline">\(D_{i,j}\)</span> is the number of times word <span class="math inline">\(j\)</span> appeared in sentence <span class="math inline">\(i\)</span>. These 3 steps are easily performed using <code>sklearn</code> (Buitinck et al., 2013) and more specifically the <code>CountVectorizer()</code> and <code>fit_transform()</code> functions.</p>
 </section>
 <section id="term-frequency---inverse-document-frequency-tf-idf" class="level4">
 <h4 class="anchored" data-anchor-id="term-frequency---inverse-document-frequency-tf-idf">Term Frequency - Inverse Document Frequency (TF-IDF)</h4>
-<p>TF-IDF (Luhn, 1957) is a numerical statistic used in text mining and information retrieval in order to reflect how important a word is in a document in a collection or corpus based on two factors. The TF-IDF value increases proportionally to the number of times a word appears in the document and is decreases based on the number of documents in the corpus that contain the word. This helps to offset the frequency bias which would declare commonly used words as more important than smaller ones. TF-IDF is thus composed of two terms, Term Frequency (TF) and Inverse Document Frequency (IDF). TF measures the frequency of a word in a document, thus if a word appears more often in a document, its TF value increases according to the following formula:</p>
+<p>TF-IDF (Luhn, 1957) is a numerical statistic used in text mining and information retrieval in order to reflect how important a word is in a document in a collection or corpus based on two factors. The TF-IDF value increases proportionally to the number of times a word appears in the document and it decreases based on the number of documents in the corpus that contain the word. This helps to offset the frequency bias which would declare commonly used words as more important than smaller ones. TF-IDF is thus composed of two terms, Term Frequency (TF) and Inverse Document Frequency (IDF). TF measures the frequency of a word in a document, thus if a word appears more often in a document, its TF value increases according to the following formula:</p>
 <p><span class="math display">\[
 \text{TF(t)} = \frac{\text{Number of times term t appears in a document}}{\text{Total number of terms in the document}}
 \]</span></p>
@@ -175,40 +199,56 @@ ul.task-list li input[type="checkbox"] {
 \]</span></p>
 <p>This value is thus larger for words that are more unique to a sentence, and lower for words that are common across many sentences.</p>
 <p>A key difference between the BoW model and TF-IDF is that BoW can be seen to suffer from frequency bias as it does not consider the uniqueness of words to a sentence, but rather places importance based on frequency. Thus common words in our case like ‘Government’ and ‘Country’ will be valued highly simply because they are used often. However, in the TF-IDF approach these words will have low scores as they appear in many documents, and therefore are not unique or informative.</p>
-<p>In order to convert our dataset of a ‘Completion’ and ‘Prompt’ column into a TF-IDF dataset, similar steps shown above must be followed. Again, tokenization must first occur, where input text is decomposed into discrete words (tokens). This process partitions the text into individual words or terms, making it amenable to further analysis. Following tokenization, a dictionary containing all distinct words (tokens) encountered within the text corpus must be built. Each unique token within this vocabulary is assigned a unique integer index for identification. Then TF-IDF Transformation occurs. This diverges from the conventional token counting approach, as the TF, IDF, and then TF-IDF values for each token within every sentence is calculated. The outcome of this process is a TF-IDF matrix. Similarly to the BoW matrix, each row within the matrix corresponds to an individual sentence, while each column corresponds to a unique token derived from the vocabulary. The matrix entries however signify the computed TF-IDF values for each token within each document, encapsulating the importance and discriminatory potential of each term. Once again, this process is largely simplified by utilizing the <code>sklearn</code> package and more specifically the <code>TfidfVectorizer()</code> and <code>fit_transform()</code> functions.</p>
+<p>In order to convert our dataset of a ‘completion’ and ‘prompt’ column into a TF-IDF dataset, similar steps shown above must be followed. Again, tokenization must first occur, where input text is decomposed into discrete words (tokens). This process partitions the text into individual words or terms, making it amenable to further work. Following tokenization, a dictionary containing all distinct words (tokens) encountered within the text corpus must be built. Each unique token within this vocabulary is assigned a unique integer index for identification. Then TF-IDF Transformation occurs. This diverges from the conventional token counting approach, as the TF, IDF, and then TF-IDF values for each token within every sentence is calculated. The outcome of this process is a TF-IDF matrix. Similarly to the BoW matrix, each row within the matrix corresponds to an individual sentence, while each column corresponds to a unique token derived from the vocabulary. The matrix entries however signify the computed TF-IDF values for each token within each document, encapsulating the importance and discriminatory potential of each term. Once again, this process is largely simplified by utilizing the <code>sklearn</code> package and more specifically the <code>TfidfVectorizer()</code> and <code>fit_transform()</code> functions.</p>
 </section>
 <section id="word-embeddings" class="level4">
 <h4 class="anchored" data-anchor-id="word-embeddings">Word Embeddings</h4>
-<p>Word embeddings are a type of word representation that allows words with similar meaning to have a similar representation. They are a distributed, numeric representation of text that is perhaps one of the key reasons for the impressive performance of deep learning methods on challenging NLP problems (Mikolov et al., 2013). State of the art Word embeddings map words in a vocabulary into a vector space, where the position of each word is learned from text data and is based on the context in which it is used. Thus typically, the position of a word within the learned vector space is referred to as its embedding. Word embeddings differ from BoW or TF-IDF datasets in several key ways. Firstly, word embeddings can capture much more complex constructs, like the semantic meaning of words. Words are thus defined by the surrounding words, which encourages the model to learn context. BoW and TF-IDF on the other hand disregard word order and context. Word embeddings can also have much lower dimensionality, which can reduce the compute time far greater than is the case with BoW and TF-IDF.</p>
-<p>However, for this study, a simple frequency based word embedding system is used which gives values to words based soley on the frequency of their occurence. In order to transform our dataset of a ‘Completion’ and ‘Prompt’ column into a word embedded dataset, 4 steps need to be followed. Firstly, an upper bound of 1000 unique words is set to restrict the number of words used in the embedding. This is done to increase efficiency. Each unique word in the text corpus needs to then be ranked in descending order of frequency, thus with the most frequently used word given a value of 1, and the second most frequently used word given a value of 2, etc. Then each sentence in the dataset should be iterated through, converting each word to the corresponding number in the frequency based ranking, while removing words entirely if they do not appear within the top 1000 most frequently used words. Finally, to ensure each sentence is embedded as a vector of the equal length, an upper bound of 50 was chosen such that vectors of length less than 50 were padded with zeros, and vectors of length over 50 were truncated to the first 50 integers.</p>
-</section>
-<section id="bert-embeddings" class="level4">
-<h4 class="anchored" data-anchor-id="bert-embeddings">BERT Embeddings</h4>
-<p>The BERT Embedding model (Devlin et al., 2019) is a pretrained model which takes one or two sentences and embeds it in a vector of numbers, similar to what we saw above. BERT’s state-of-the-art performance is based on new pre-training tasks, namely Masked Language Model(MLM) and Next Sentense Prediction (NSP), as well as a large enough dataset(3.3 billion words) and enough compute power to train BERT. Through MLM and NSP, BERT is able to attach meaning to words through recognizing the word itself, as well as by analyzing the words around it.</p>
+<p>State-of-the-art word embeddings are a vector representation that can allow words with similar meaning to have a similar representation. They are a distributed, numeric representation of text that is perhaps one of the key reasons for the impressive performance of deep learning methods on challenging NLP problems (Mikolov et al., 2013). Trained Word embedding networks map words in a vocabulary into a vector space, where the position of each word is learned from text data and is based on the context in which it is used. Thus typically, the position of a word within the learned vector space is referred to as its embedding. Word embeddings differ from BoW or TF-IDF datasets in several key ways. Firstly, word embeddings can capture much more complex constructs, like the semantic meaning of words. Words are thus defined by the surrounding words, which encourages the model to learn context. BoW and TF-IDF on the other hand disregard word order and context. Word embeddings can also have much lower dimensionality, which can reduce the compute time far greater than is the case with BoW and TF-IDF.</p>
+<p>However, for this study, a simple frequency based word embedding system is used which gives values to words based soley on the frequency of their occurence. In order to transform our dataset of a ‘completion’ and ‘prompt’ column into a word embedded dataset, 4 steps need to be followed. Firstly, an upper bound of 1000 unique words is set to restrict the number of words used in the embedding. This is done to increase efficiency. Each unique word in the text corpus needs to then be ranked in descending order of frequency, thus with the most frequently used word given a value of 1, and the second most frequently used word given a value of 2, etc. Then each sentence in the dataset should be iterated through, converting each word to the corresponding number in the frequency based ranking, while removing words entirely if they do not appear within the top 1000 most frequently used words. Finally, to ensure each sentence is embedded as a vector of the equal length, an upper bound of 50 was chosen such that vectors of length less than 50 were padded with zeros, and vectors of length over 50 were truncated to the first 50 integers.</p>
 </section>
 </section>
 <section id="eda" class="level3">
 <h3 class="anchored" data-anchor-id="eda">EDA</h3>
-<p>The dataset is comprised of 36 speeches made by South African presidents Zuma, Mbeki, Ramaphosa, Mandela, Motlanthe, and de Klerk, from the years 1994 to 2023. The barplot below displays the number of sentences spoken by each president. Significant variation in the number of sentences associated with each president can be seen. Notably, Jacob Zuma had the highest number of sentences attributed to him, totaling 2,629 sentences. Thabo Mbeki followed closely with 2,397 sentences, while Cyril Ramaphosa had 2,279 sentences. Nelson Mandela had 1,671 sentences in the dataset. Kgalema Motlanthe and F.W. de Klerk had relatively fewer sentences, with 264 and 97 sentences, respectively.</p>
-<div class="quarto-layout-panel" data-caption="Figure 1">
+<p>The dataset is comprised of 36 speeches made by South African presidents Zuma, Mbeki, Ramaphosa, Mandela, Motlanthe, and de Klerk, from the years 1994 to 2023. The barplot below displays the number of sentences spoken by each president. Significant variation in the number of sentences associated with each president can be seen. Notably, Jacob Zuma had the highest number of sentences attributed to him, totaling 2,629 sentences. Thabo Mbeki followed closely with 2,397 sentences, while Cyril Ramaphosa had 2,279 sentences. Nelson Mandela had 1,671 sentences in the dataset. Motlanthe and F.W. de Klerk had relatively fewer sentences, with 264 and 97 sentences, respectively. From this we can see that we expect the models to struggle to classify Motlanthe and de Klerk sentences correctly, since their respective datasets are so small.</p>
+<div class="quarto-layout-panel">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><img src="eda_plots/sentence_counts.png" class="img-fluid" width="550"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="eda_plots/sentence_counts.png" class="img-fluid figure-img" width="400"></p>
+<figcaption class="figure-caption">Figure 1: Number of sentences per president</figcaption>
+</figure>
+</div>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><img src="eda_plots/sentence_length.png" class="img-fluid" width="550"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="eda_plots/sentence_length.png" class="img-fluid figure-img" width="400"></p>
+<figcaption class="figure-caption">Figure 2: Average sentence length per president</figcaption>
+</figure>
 </div>
 </div>
 </div>
-<p>Findings include varying sentence lengths among presidents, with President Mbeki having the longest average sentence length at approximately 15.27 words per sentence, and President de Klerk having the shortest at about 9.87 words per sentence. This variability may indicate differences in communication styles, speech contexts, or historical periods.</p>
+</div>
+<p>Figure 2 shows the varying sentence lengths among presidents, with President Mbeki having the longest average sentence length at approximately 15 words per sentence, and President de Klerk having the shortest at about 10 words per sentence. This variability may indicate differences in communication styles, speech contexts, or historical periods.</p>
 <p>The word clouds below shows the most frequently used words by each president. Interestingly, de Klerk is the only president who regularly used the words “constitution” and “constitutional”, which could be due to him being involved in the negotiation of the new constitution in South Africa. Other commonly used words which further suggest this narrative include “right”, “amendment” and “Freedom Alliance”. “South Africa”, “Goverment” and “country” are some of the other more popular words used by the presidents, as can be seen in Mandela’s wordcloud. Interestingly, before removing the stopwords, “will” was a very popular word used by the presidents which highlights the alure of promises about the future often made by leaders.</p>
 <div class="quarto-layout-panel" data-caption="Caption for the Panel Figure">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><img src="eda_plots/deklerk_wordcloud.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="eda_plots/deklerk_wordcloud.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure 3: Word cloud for de Klerk</figcaption>
+</figure>
+</div>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><img src="eda_plots/mandela_wordcloud.png" class="img-fluid"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="eda_plots/mandela_wordcloud.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure 4: Word cloud for Mandela</figcaption>
+</figure>
+</div>
 </div>
 </div>
 </div>
@@ -218,13 +258,13 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="modelling">Modelling</h3>
 <section id="feed-forward-neural-networks" class="level4">
 <h4 class="anchored" data-anchor-id="feed-forward-neural-networks">Feed-forward Neural Networks</h4>
-<p>Feed-forward Neural networks are a subset of machine learning algorithms modeled after the human brain (Lim &amp; Sung, 1970). They are composed of interconnected nodes or “neurons” that process information using a system of weights and bias values. These weights and bias values are adjusted during the training process to minimize the difference between the network’s predicted output and the actual observed value. This updating of weights occurs threw a process known as backpropagation. The advantage of neural networks is their ability to identify complex patterns and relationships in data, making them especially useful for tasks such as image recognition, natural language processing, and predictive modeling.</p>
+<p>Feed-forward Neural networks are a subset of machine learning algorithms modeled after the human brain (Lim &amp; Sung, 1970). They are composed of interconnected nodes or “neurons” that process information using a system of weights and bias values. These weights and bias values are adjusted during the training process to minimize the difference between the network’s predicted output and the actual observed value. This updating of weights occurs through a process known as backpropagation. The advantage of neural networks is their ability to identify complex patterns and relationships in data, making them especially useful for tasks such as image recognition, natural language processing, and predictive modeling.</p>
 <p>To optimize the performance of the Feed-forward Neural Network, a systematic exploration was undertaken. This involved conducting a grid search, wherein various configurations were evaluated. Specifically, we focused on 3 critical aspects of the network architecture: the number of hidden layers, the number of neurons within each layer, and the L2-regularization value applied. Our initial exploration encompassed three distinct network architectures. First, a model with two hidden layers was examined, followed by one with three hidden layers and finally a model with four hidden layers. The selection of the ultimate network architecture was based on the examination of the validation accuracy. Having determined the optimal architecture, we further refined our model through the application of L2-regularization. In particular, we applied a range of L2-regularization values from 0.01 to 0.1, with the intent of identifying the value that yielded the highest validation accuracy in the selected model. This approach was replicated for each of the datasets, namely BoW, TF-IDF, and word embeddings.</p>
 </section>
 <section id="boosted-trees" class="level4">
 <h4 class="anchored" data-anchor-id="boosted-trees">Boosted Trees</h4>
 <p>Boosted trees are an ensemble of, generally, weak learners, which are sequentially trained on the errors made by their predecessors. This iterative process involves assigning weights to training data points, emphasizing the samples that are consistently misclassified. The subsequent trees are then tailored to rectify these misclassifications, incrementally improving predictive accuracy over a large number of learners. CatBoost, as introduced by (Prokhorenkova et al., 2019), distinguishes itself from the other gradient boosting algorithms such as XGBoost and LightGBM through its unique approach to tree construction. Unlike its counterparts, CatBoost constructs balanced trees that exhibit a symmetrical structure. This implies that the feature-split pair which minimizes the loss function is uniformly selected and applied to all nodes within the same level of the tree.</p>
-<p>In the pursuit of optimizing the hyperparameters of the CatBoost algorithm, a grid search was conducted. The grid search was performed across a comprehensive parameter spacethe parameters <code>iterations</code>, <code>learning_rate</code>, <code>depth</code>, and <code>l2_leaf_reg</code>. <code>iterations</code> determines the number of boosting iterations during the training process. <code>learning_rate</code> governs the step size at each iteration while moving towards a minimum of the loss function, while <code>depth</code> defines the maximum depth of the decision tree. Finally, <code>l2_leaf_reg</code> contributes to controlling overfitting by penalizing the magnitude of the weights. For each combination of these parameters, the CatBoost algorithm was trained and validated, and the model’s performance was assessed through the accuracy of the model on the validation set. The overarching objective was to identify the hyperparameter configuration that yielded the optimal model performance, as indicated by the validation accuracy.</p>
+<p>In the pursuit of optimizing the hyperparameters of the CatBoost algorithm, a grid search was conducted. The grid search was performed across a comprehensive parameter space including the parameters <code>iterations</code>, <code>learning_rate</code>, <code>depth</code>, and <code>l2_leaf_reg</code>. <code>iterations</code> determines the number of boosting iterations during the training process. <code>learning_rate</code> governs the step size at each iteration while moving towards a minimum of the loss function, while <code>depth</code> defines the maximum depth of the decision tree. Finally, <code>l2_leaf_reg</code> contributes to controlling overfitting by penalizing the magnitude of the weights. For each combination of these parameters, the CatBoost algorithm was trained and validated, and the model’s performance was assessed through the accuracy of the model on the validation set. The overarching objective was to identify the hyperparameter configuration that yielded the optimal model performance, as indicated by the validation accuracy.</p>
 </section>
 <section id="naive-bayes" class="level4">
 <h4 class="anchored" data-anchor-id="naive-bayes">Naive Bayes</h4>
@@ -233,7 +273,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="electra" class="level4">
 <h4 class="anchored" data-anchor-id="electra">ELECTRA</h4>
-<p>The ELECTRA (Efficiently Learning an Encoder that Classifies Token Replacements Accurately)(Clark et al., 2020) model introduces a novel approach to pre-training in the domain of natural language processing (NLP). While traditional pre-training methods like BERT rely on Masked Language Modeling (MLM), where input tokens are partially obscured by replacing them with a special token ([MASK]) and the model is trained to predict the original tokens, ELECTRA takes a distinct and more data-efficient route. ELECTRA replaces select tokens in the input text with plausible alternatives drawn from a generator network. The important change is in the subsequent training objective: rather than training a model to predict the original identities of the corrupted tokens, ELECTRA trains a discriminative model, like a Generative Adverserial Network (GAN) (Goodfellow et al., 2014). The Discriminative model’s task is thus to determine whether each token in the corrupted input was replaced by a sample generated from the network or if it is the original, unchanged token.</p>
+<p>The ELECTRA (Efficiently Learning an Encoder that Classifies Token Replacements Accurately)(Clark et al., 2020) model introduces a novel approach to pre-training in the domain of NLP. While traditional pre-training methods like BERT rely on Masked Language Modeling (MLM), where input tokens are partially obscured by replacing them with a special token ([MASK]) and the model is trained to predict the original tokens, ELECTRA takes a more data-efficient route. ELECTRA replaces select tokens in the input text with plausible alternatives drawn from a generator network. Thus rather than training a model to predict the original identities of the corrupted tokens, ELECTRA trains a discriminative model, like the one found in a Generative Adverserial Network (GAN) (Goodfellow et al., 2014). The Discriminative model’s task is thus to determine whether each token in the corrupted input was replaced by a sample generated from the network or if it is the original, unchanged token.</p>
 </section>
 </section>
 <section id="model-diagnostics" class="level3">
@@ -246,7 +286,7 @@ ul.task-list li input[type="checkbox"] {
 <p><span class="math display">\[
 \text{Recall}= \frac{\text{True Positives for Class}}{\text{True Positives for Class} + \text{False Negatives for Class}}
 \]</span></p>
-<p>The final metric consulted is the F1-score for each class and is the harmonic mean of precision and recall for that class. It balances precision and recall and since our classes are imbalanced, it is a suitable metric for model performance (Seo et al., 2021).</p>
+<p>The final metric consulted is the F1-score for each class and is the harmonic mean of precision and recall for that class. It balances precision and recall and since our classes are imbalanced, it is a suitable, all-encompassing metric for model performance (Seo et al., 2021).</p>
 <p><span class="math display">\[
 \text{F1-Score}= 2\times \frac{\text{Preicision}\times \text{Recall}}{\text{Precision} + \text{Recall}}
 \]</span></p>
@@ -256,6 +296,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <p>The table below illustrates the test set accuracy for various machine learning models across the different datasets. Notably, we observe variations in accuracy across models and data sources, which highlight the influence of both the model architecture and the data representation technique. The highest test set accuracy is achieved with the Neural Network on the TF-IDF, with a score of 59.7%, while the Naive Bayes model performs second best also on the TF-IDF dataset with a score of 59%. The Boosted Tree performs best on the Frequency embeddings with a score of 34.8%.</p>
 <table class="table">
+<caption>Table 1: Test set accuracy for all models</caption>
 <colgroup>
 <col style="width: 29%">
 <col style="width: 12%">
@@ -269,7 +310,7 @@ ul.task-list li input[type="checkbox"] {
 <th>BoW</th>
 <th>TF-IDF</th>
 <th>Frequency Embeddings</th>
-<th>BERT Embeddings</th>
+<th>ELECTRA Embeddings</th>
 </tr>
 </thead>
 <tbody>
@@ -295,7 +336,7 @@ ul.task-list li input[type="checkbox"] {
 <td></td>
 </tr>
 <tr class="even">
-<td>ELECTRA-Base</td>
+<td>ELECTRA</td>
 <td></td>
 <td></td>
 <td></td>
@@ -303,8 +344,9 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-<p>Talk about F1-scores below.</p>
+<p>The table below displays F1-scores for all models, across the datasets, and for each category. The Naive Bayes model achieves the highest F1-score with a value of 0.65 for both Ramaphosa and Zuma, both while using the TF-IDF dataset. Several zero F1-scores are also present for the scarce categories of Motlanthe and deKlerk, with an F1-score of 0 being achieved by both the Neural Net and the CatBoost algorithm when the word embeddings dataset was used, as well as for the ELECTRA model.</p>
 <table class="table">
+<caption>Table 2: Test set F1-scores for all models</caption>
 <colgroup>
 <col style="width: 14%">
 <col style="width: 16%">
@@ -319,12 +361,12 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>Model Type</th>
 <th>Dataset</th>
-<th>P1</th>
-<th>P2</th>
-<th>P3</th>
-<th>P4</th>
-<th>P5</th>
-<th>P6</th>
+<th>Motlanthe</th>
+<th>Mandela</th>
+<th>Mbeki</th>
+<th>Ramaphosa</th>
+<th>Zuma</th>
+<th>deKlerk</th>
 </tr>
 </thead>
 <tbody>
@@ -350,7 +392,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td></td>
-<td>Embeddings</td>
+<td>Frequency Embeddings</td>
 <td>0.0</td>
 <td>0.042</td>
 <td>0.219</td>
@@ -359,7 +401,7 @@ ul.task-list li input[type="checkbox"] {
 <td>0.0</td>
 </tr>
 <tr class="even">
-<td><strong>Catboost</strong></td>
+<td><strong>CatBoost</strong></td>
 <td>BoW</td>
 <td>0.044</td>
 <td>0.465</td>
@@ -380,7 +422,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td></td>
-<td>Embeddings</td>
+<td>Frequency Embeddings</td>
 <td>0.0</td>
 <td>0.008</td>
 <td>0.39</td>
@@ -410,7 +452,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td></td>
-<td>Embeddings</td>
+<td>Frequency Embeddings</td>
 <td>0.02</td>
 <td>0.11</td>
 <td>0.31</td>
@@ -418,12 +460,53 @@ ul.task-list li input[type="checkbox"] {
 <td>0.47</td>
 <td>0.01</td>
 </tr>
+<tr class="even">
+<td><strong>ELECTRA</strong></td>
+<td>ELECTRA Embeddings</td>
+<td>0</td>
+<td>0.47</td>
+<td>0.54</td>
+<td>0.62</td>
+<td>0.61</td>
+<td>0</td>
+</tr>
 </tbody>
 </table>
-<p><strong>Discussion Section:</strong> The accuracy table provides valuable insights into the performance of different machine learning models across multiple data sources. Noteworthy observations include the relatively high accuracy achieved by the “Neural Net” and “Boosted Tree” models when applied to TF-IDF data, underscoring the suitability of this data representation for these models. In contrast, the “Naive Bayes” model excels with BoW data. Additionally, the introduction of BERT Embeddings, represented by the “ELECTRA-Base” model, demonstrates significantly enhanced accuracy, suggesting the effectiveness of pre-trained embeddings in capturing complex patterns within the data. These findings emphasize the importance of model-data compatibility and the potential benefits of leveraging advanced embeddings for improved predictive performance. The table offers a comprehensive view of the interplay between models and data sources, shedding light on their combined influence on the accuracy of the predictive models.</p>
 </section>
 <section id="discussion" class="level2">
 <h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
+<p>The accuracy table provides valuable insights into the performance of different machine learning models across multiple data sources. Noteworthy observations include the relatively high accuracy achieved by the Neural Network and Boosted Tree models when applied to TF-IDF data, underscoring the suitability of this data representation for these models. In contrast, the Naive Bayes model excels with BoW data, achieving the second highest test set accuracy score on this data. Additionally, the introduction of ELECTRA Embeddings used in the ELECTRA model, demonstrates competitive accuracy, suggesting the effectiveness of pre-trained embeddings in capturing complex patterns within the data. However, the fact that these fine-tuned state-of-the-art embeddings have not lead to drastically better performance in the test set highlights key insights into these models. Whether the underwhelming performance by ELECTRA is due to the lack of data (as transformers are notoriously slow to learn), or the complexity of the data, remains unknown. However, the equally competitive scores achieved by far simpler machine learning models is a good sign of the ability of simpler cost effective models to compete with an LLM such as ELECTRA.</p>
+<p>In Table 2 showing F1-scores for the models, several noteworthy observations can be made. Firstly, amongst the simpler models, they all exhibit greater F1-scores over the BoW and TF-IDF datasets when compared to the word embeddings dataset, highlighting that the Data Representation certainly matters. As mentioned in the Methodology section, this is likely due to the primitive embedding system used in this section, which leads to a dataset with a far lesser dimensionality, as well as representations for words which do not represent meaning apart from relative frequency of use. As was seen in the accuracy table discussed above, the TF-IDF dataset appears to be the favoured dataset as well, followed by BoW. ELECTRA and ELECTRA Embeddings once again demonstrate competitive F1-scores. This further suggests the effectiveness of fine tuning pre-trained embeddings in capturing complex patterns within the data. The comparable scores achieved by the simpler machine learning models once again raises questions about the efficacy of LLMs such as ELECTRA when the data is not abundant. The fact that simpler machine learning models, such as “Naive Bayes” and “CatBoost,” achieve competitive F1-scores when compared to a complex language model like ELECTRA, underscores the effectiveness of simpler, cost-effective models in text classification tasks. This observation highlights the potential of simpler models to compete with LLMs like ELECTRA in the absence of extensive training data, in classification tasks.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This study analyses the performance of various machine learning models within the realm of text classification. We present a comprehensive analysis of accuracy and F1-scores, offering a deep understanding of each model’s strengths and limitations. Notably, in scenarios with limited data, simpler models such as Boosted Trees, Feed-Forward Neural Networks, and Naive Bayes demonstrate performances comparable with ELECTRA. Additionally, our exploration introduces ELECTRA Embeddings through the ELECTRA model, revealing strong accuracy and emphasizing the significance of pre-trained embeddings in capturing intricate data patterns.</p>
+<p>These findings hold substantial implications for practical applications. Researchers and practitioners can leverage this analysis to make informed choices regarding model selection and data representation for specific text classification tasks. Furthermore, this study reinforces the idea that complex language models, while potent, may not consistently outperform simpler alternatives, especially when data is scarce.</p>
+<p>While this research provides valuable insights, further investigations on balanced datasets with increased observations are warranted. This approach would allow us to fully assess the potential of LLMs, particularly when a large enough dataset is available, which could warrrant the large number of parameters available in an LLM.</p>
+<p>Our results underscore the effectiveness of both simpler models and pre-trained embeddings, emphasizing the nuanced interplay between data representation and model performance. As the landscape of text classification tasks evolves, our research offers guidance in selecting the right models and data representations for achieving optimal, efficient outcomes.</p>
+</section>
+<section id="appendix" class="level2">
+<h2 class="anchored" data-anchor-id="appendix">Appendix</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 47.1%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="nn_res/nn_val_acc_copy.png" class="img-fluid figure-img" width="400"></p>
+<figcaption class="figure-caption">Figure A1: Neural Network validation accuracy</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 52.9%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="catboost_info/cb_val_acc_copy.png" class="img-fluid figure-img" width="450"></p>
+<figcaption class="figure-caption">Figure A2: CatBoost validation accuracy</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="bibliography" class="level2">
 <h2 class="anchored" data-anchor-id="bibliography">Bibliography</h2>

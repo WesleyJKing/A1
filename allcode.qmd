@@ -86,6 +86,7 @@ df['prompt'] = df['prompt'].apply(remove_stopwords)
 df.reset_index(drop=True, inplace=True)
 
 df.to_csv("data.csv")
+df["completion"].to_csv("y.csv")
 ```
 
 ### Bag of Words 
@@ -202,9 +203,9 @@ sentence_counts = data['completion'].value_counts()
 
 plt.figure(figsize=(10, 6))
 sns.barplot(x=sentence_counts.index, y=sentence_counts.values)
-
-plt.xlabel('Presidents')
-plt.ylabel('Number of Sentences')
+plt.xlabel('', fontsize=16)
+plt.ylabel('Number of Sentences', fontsize=16)
+ax.tick_params(axis='both', which='major', labelsize=14)  
 plt.savefig('eda_plots/sentence_counts.png', bbox_inches='tight')
 plt.show()
 
@@ -220,8 +221,9 @@ average_sentence_length = average_sentence_length.loc[desired_order]
 # Plot the barplot of average sentence lengths per president
 plt.figure(figsize=(10, 6))
 sns.barplot(x='completion', y='sentence_length', data=average_sentence_length)
-plt.xlabel('Presidents')
-plt.ylabel('Average Sentence Length')
+plt.xlabel('', fontsize=16)
+ax.tick_params(axis='both', which='major', labelsize=14)  
+plt.ylabel('Average sentence length', fontsize=16)
 plt.savefig('eda_plots/sentence_length.png', bbox_inches='tight')
 plt.show()
 ```
@@ -560,8 +562,8 @@ ax.set_ylabel('Validation Accuracy')
 ax.set_title('Validation Accuracy Comparison')
 ax.legend()
 ax.set_xticks(range(21))
-plt.grid(True)
-plt.savefig('nn_res/nn_val_acc.png', bbox_inches='tight')
+#plt.grid(True)
+#plt.savefig('nn_res/nn_val_acc.png', bbox_inches='tight')
 plt.show()
 
 ```
@@ -967,4 +969,138 @@ best_mod = grid.best_estimator_
 y_pred = best_mod.predict(X_test)
 y_true = np.argmax(y_test, axis=1)
 report = classification_report(y_true, y_pred)
+```
+
+### ELECTRA
+
+
+```{python}
+import tensorflow as tf
+import tensorflow_text as text
+import numpy as np
+
+import pandas as pd
+
+# Read the uploaded CSV file into a pandas DataFrame
+x = pd.read_csv("data.csv")["prompt"]
+
+y = pd.read_csv("y.csv").iloc[:,1:]
+# Split dataset into train and a temporary set (70% - 30% split)
+x_train, x_temp, y_train, y_temp = train_test_split(x, y, test_size=0.3, random_state=42)
+x_val, x_test, y_val, y_test = train_test_split(x_temp, y_temp, test_size=0.5, random_state=42)
+
+# Assuming you have a list of unique presidents
+unique_presidents = y['completion'].unique()
+
+label_map = {name: id for id, name in enumerate(unique_presidents)}
+# join dataframes
+train = pd.concat([x_train, y_train], axis=1)
+val = pd.concat([x_val, y_val], axis=1)
+test = pd.concat([x_test, y_test], axis=1)
+
+# Integer-encode labels
+train['completion'] = train['completion'].map(label_map)
+val['completion'] = val['completion'].map(label_map)
+test['completion'] = test['completion'].map(label_map)
+
+# Convert pandas DataFrames to TensorFlow datasets
+def pd_to_tf(df, shuffle=True, batch_size=32):
+    ds = tf.data.Dataset.from_tensor_slices((df['prompt'].values, df['completion'].values))
+    if shuffle:
+        ds = ds.shuffle(buffer_size=len(df))
+    ds = ds.batch(batch_size)
+    ds = ds.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+    return ds
+
+train_tf = pd_to_tf(train)
+val_tf = pd_to_tf(val, shuffle=False)
+test_tf = pd_to_tf(test, shuffle=False)
+
+train_tf = tf.data.Dataset.from_tensor_slices((train['prompt'].values, train['completion'].values))
+val_tf = tf.data.Dataset.from_tensor_slices((val['prompt'].values, val['completion'].values))
+test_tf = tf.data.Dataset.from_tensor_slices((test['prompt'].values, test['completion'].values))
+
+# Shuffle the train dataset
+train_tf = train_tf.shuffle(buffer_size=len(train), seed=42)
+
+# Define batch size; often 32 is used
+batch_size = 32
+
+# Batch and cache datasets
+train_tf = train_tf.batch(batch_size)
+val_tf = val_tf.batch(batch_size)
+test_tf = test_tf.batch(batch_size)
+
+# Prefetch data for better performance
+train_tf = train_tf.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+val_tf = val_tf.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+test_tf = test_tf.cache().prefetch(buffer_size=tf.data.AUTOTUNE)
+
+tfhub_handle_preprocess = 'https://tfhub.dev/tensorflow/bert_en_uncased_preprocess/3' #
+tfhub_handle_encoder = 'https://tfhub.dev/google/electra_base/2'
+
+def classifier(num_classes):
+  text_input = tf.keras.layers.Input(shape=(), dtype=tf.string, name='text')
+  # electra pre-process
+  preprocessing_layer = hub.KerasLayer(tfhub_handle_preprocess, name='preprocessing')
+  encoder_inputs = preprocessing_layer(text_input)
+  # electra encoder
+  encoder = hub.KerasLayer(tfhub_handle_encoder, trainable=True, name='BERT_encoder')
+  outputs = encoder(encoder_inputs)
+  net = outputs['pooled_output']
+  net = tf.keras.layers.Dropout(0.3)(net)
+  # Modify this line to adjust the number of output neurons and use softmax
+  net = tf.keras.layers.Dense(num_classes, activation='softmax', name='classifier')(net)
+  return tf.keras.Model(text_input, net)
+
+
+num_classes = len(unique_presidents)
+
+with tf.device('/device:GPU:0'):
+  classifier_model = classifier(num_classes)
+classifier_model.summary()
+
+loss = tf.keras.losses.SparseCategoricalCrossentropy() # beause of imbalanced dataset
+metrics = tf.metrics.SparseCategoricalAccuracy()
+
+# only 15 epochs because of how long each epoch takes
+epochs = 15
+steps_per_epoch = tf.data.experimental.cardinality(train_tf).numpy()
+num_train_steps = steps_per_epoch * epochs
+num_warmup_steps = int(0.1*num_train_steps)
+
+init_lr = 2e-4
+optimizer = optimization.create_optimizer(init_lr=init_lr,num_train_steps=num_train_steps,num_warmup_steps=num_warmup_steps,
+                                          optimizer_type='adamw')
+
+from tensorflow.keras.callbacks import EarlyStopping
+
+early_stop = EarlyStopping(
+    monitor='val_loss',     # show validation loss
+    patience=3,             # training halted if 3 epochs go by with no improvement
+    restore_best_weights=True  # restore best weights
+)
+
+with tf.device('/device:GPU:0'):
+  classifier_model.compile(optimizer=optimizer,loss=loss,metrics=metrics)
+
+with tf.device('/device:GPU:0'):
+  history = classifier_model.fit(x=train_tf,validation_data=val_tf, epochs=num_epochs, callbacks=[early_stop])
+
+def evaluate_classifier(model, dataset):
+    predictions = []
+    true_labels = []
+
+    for x, y in dataset:
+        predicted_labels = np.argmax(model(x, training=False), axis=1) # choose maximum logit
+        true_labels.extend(y.numpy()) # true value
+        predictions.extend(predicted_labels) # predicted value
+
+    return true_labels, predictions
+
+test_true, test_pred = evaluate_model(classifier_model, test_tf)
+## compute report
+class_report = classification_report(test_true, test_pred, target_names=presidents)
+
+
 ```
