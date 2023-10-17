@@ -194,6 +194,8 @@ Our results underscore the effectiveness of both simpler models and pre-trained 
 
 ## Bibliography
 
+Classify text with Bert (no date) TensorFlow. Available at: https://www.tensorflow.org/text/tutorials/classify_text_with_bert (Accessed: 17 October 2023). 
+
 electra_base (no date) Tensorflow hub. Available at: https://tfhub.dev/google/electra_base/2 (Accessed: 14 October 2023). 
 
 Luo, X. and AbstractText classification (TC) is an approach used for the classification of any kind of documents for the target category or out. In this paper (2021) Efficient English text classification using selected Machine Learning Techniques, Alexandria Engineering Journal. Available at: https://www.sciencedirect.com/science/article/pii/S1110016821000806 (Accessed: 05 October 2023). 
@@ -261,7 +263,3 @@ Mikolov, T. et al. (2013) Efficient estimation of word representations in vector
 
 Goodfellow, I.J. et al. (2014) Generative Adversarial Networks, arXiv.org. Available at: https://arxiv.org/abs/1406.2661 (Accessed: 11 October 2023). 
 
-## Figures
-
-```{figure, fig.cap="Caption for Figure 1"}
-![Figure 1](path/to/figure1.png)
