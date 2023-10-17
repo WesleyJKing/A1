@@ -67,7 +67,7 @@
     "href": "appendix.html",
     "title": "Appendix",
     "section": "",
-    "text": "Appendix\n\n\n\n\n\n\nFigure A1: Neural Network validation accuracy\n\n\n\n\n\n\n\nFigure A2: CatBoost validation accuracy\n\n\n\n\n\n\nTable A1: Optimal Feed-Forward Neural Networks\n\n\nData Type\nHidden Layers\nL2 Reg Value\n\n\n\n\nBoW\n2\n0\n\n\nTF-IDF\n2\n0\n\n\nFrequency Embeddings\n5\n0\n\n\n\n\nTable A2: Optimal Boosted Tree models\n\n\nData type\nDepth\nL2_leaf_reg\nLearning Rate\n\n\n\n\nBoW\n6\n0.2\n0.05\n\n\nTF-IDF\n6\n0.2\n0.05\n\n\nFrequency Embeddings\n6\n0.2\n0.03\n\n\n\n\nTable A3: Optimal Naive Bayes models\n\n\nData type\nAlpha\n\n\n\n\nBoW\n1\n\n\nTF-IDF\n0.1\n\n\nFrequency Embeddings\n10"
+    "text": "Figure A1: Neural Network validation accuracy\n\n\n\n\n\n\n\nFigure A2: CatBoost validation accuracy\n\n\n\n\n\n\nTable A1: Optimal Feed-Forward Neural Networks\n\n\nData Type\nHidden Layers\nL2 Reg Value\n\n\n\n\nBoW\n2\n0\n\n\nTF-IDF\n2\n0\n\n\nFrequency Embeddings\n5\n0\n\n\n\n\nTable A2: Optimal Boosted Tree models\n\n\nData type\nDepth\nL2_leaf_reg\nLearning Rate\n\n\n\n\nBoW\n6\n0.2\n0.05\n\n\nTF-IDF\n6\n0.2\n0.05\n\n\nFrequency Embeddings\n6\n0.2\n0.03\n\n\n\n\nTable A3: Optimal Naive Bayes models\n\n\nData type\nAlpha\n\n\n\n\nBoW\n1\n\n\nTF-IDF\n0.1\n\n\nFrequency Embeddings\n10"
   },
   {
     "objectID": "allcode.html",
