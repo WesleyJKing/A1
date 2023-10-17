@@ -65,16 +65,9 @@
   {
     "objectID": "appendix.html",
     "href": "appendix.html",
-    "title": "DS4I Assignment 1",
+    "title": "Appendix",
     "section": "",
-    "text": "Figure A1: Neural Network validation accuracy\n\n\n\n\n\n\n\nFigure A2: CatBoost validation accuracy"
-  },
-  {
-    "objectID": "appendix.html#appendix",
-    "href": "appendix.html#appendix",
-    "title": "DS4I Assignment 1",
-    "section": "",
-    "text": "Figure A1: Neural Network validation accuracy\n\n\n\n\n\n\n\nFigure A2: CatBoost validation accuracy"
+    "text": "Appendix\n\n\n\n\n\n\nFigure A1: Neural Network validation accuracy\n\n\n\n\n\n\n\nFigure A2: CatBoost validation accuracy"
   },
   {
     "objectID": "allcode.html",

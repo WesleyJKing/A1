@@ -12,3 +12,24 @@ execute:
 
 ![Figure A2: CatBoost validation accuracy](catboost_info/cb_val_acc_copy.png){width=450px height=400px}
 :::
+
+| Data Type | Hidden Layers | L2 Reg Value |
+|-----------|---------------|--------------|
+| BoW       | 2             | 0            |
+| TF-IDF    | 2             | 0            |
+| Frequency Embeddings | 5 | 0            |
+: Table A1: Optimal Feed-Forward Neural Networks
+
+| Data type            | Depth | L2_leaf_reg | Learning Rate |
+|----------------------|-------|------------|---------------|
+| BoW                  | 6     | 0.2        | 0.05          |
+| TF-IDF               | 6     | 0.2        | 0.05          |
+| Frequency Embeddings | 6     | 0.2        | 0.03          |
+: Table A2: Optimal Boosted Tree models
+
+| Data type            | Alpha | 
+|----------------------|-------|
+| BoW                  | 1     |
+| TF-IDF               | 0.1     | 
+| Frequency Embeddings | 10     | 
+: Table A3: Optimal Naive Bayes models
