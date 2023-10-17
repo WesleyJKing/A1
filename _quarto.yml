@@ -2,8 +2,8 @@ project:
   type: website
   output-dir: docs
 
-embed-resources: true
-
+Rendering:
+  embed-resources: true
 website:
   title: "DS4I Assignment 1"
   navbar:
