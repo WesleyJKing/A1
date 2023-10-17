@@ -1,0 +1,7 @@
+## Appendix
+
+::: {layout-ncol=2}
+![Figure A1: Neural Network validation accuracy](nn_res/nn_val_acc_copy.png){width=400px height=350px}
+
+![Figure A2: CatBoost validation accuracy](catboost_info/cb_val_acc_copy.png){width=450px height=400px}
+:::

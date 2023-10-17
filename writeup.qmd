@@ -183,14 +183,6 @@ While this research provides valuable insights, further investigations on balanc
 Our results underscore the effectiveness of both simpler models and pre-trained embeddings, emphasizing the nuanced interplay between data representation and model performance. As the landscape of text classification tasks evolves, our research offers guidance in selecting the right models and data representations for achieving optimal, efficient outcomes.
 
 
-## Appendix
-
-::: {layout-ncol=2}
-![Figure A1: Neural Network validation accuracy](nn_res/nn_val_acc_copy.png){width=400px height=350px}
-
-![Figure A2: CatBoost validation accuracy](catboost_info/cb_val_acc_copy.png){width=450px height=400px}
-:::
-
 
 ## Bibliography
 
