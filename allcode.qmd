@@ -85,7 +85,7 @@ df['prompt'] = df['prompt'].apply(remove_stopwords)
 
 df.reset_index(drop=True, inplace=True)
 
-df.to_csv("data.csv")
+df.to_csv("data.csv") # data.csv IS NOT STORED IN GITHUB ENVIRONMENT BECAUSE ITS TOO BIG
 df["completion"].to_csv("y.csv")
 ```
 
