@@ -1,4 +1,11 @@
-## Appendix
+---
+title: "Appendix"
+execute:
+  echo: true
+  eval: false
+---
+
+# Appendix
 
 ::: {layout-ncol=2}
 ![Figure A1: Neural Network validation accuracy](nn_res/nn_val_acc_copy.png){width=400px height=350px}
