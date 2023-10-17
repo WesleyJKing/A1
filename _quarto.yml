@@ -2,10 +2,6 @@ project:
   type: website
   output-dir: docs
 
-format:
-  html:
-    Rendering:
-      embed-resources: true
 website:
   title: "DS4I Assignment 1"
   navbar:
@@ -18,6 +14,8 @@ website:
 
 format:
   html:
+    Rendering:
+      embed-resources: true
     theme: cosmo
     css: styles.css
     toc: true
