@@ -229,3 +229,8 @@ Ong, M.-S., Magrabi, F. and Coiera, E. (2010) Automated categorisation of Clinic
 Qader, W.A., Ameen, M.M. and Ahmed, B.I. (2019) An overview of bag of words; importance, implementation, applications, and Challenges. Available at: https://www.researchgate.net/publication/338511771_An_Overview_of_Bag_of_WordsImportance_Implementation_Applications_and_Challenges (Accessed: 09 October 2023).
 
 Ravindranath, P. et al. (2017) Machine learning in Automated Classification of adverse events in clinical
+
+
+## Plagiarism Declaration
+
+[Plagiarism Declaration](PLAGIARISM.pdf)
