@@ -14,8 +14,7 @@ website:
 
 format:
   html:
-    Rendering:
-      embed-resources: true
+    embed-resources: true
     theme: cosmo
     css: styles.css
     toc: true
